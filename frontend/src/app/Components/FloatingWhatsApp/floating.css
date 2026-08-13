@@ -1,0 +1,118 @@
+.floating-whatsapp-box {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 9999;
+  }
+  
+  .floating-content {
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .floating-icon {
+    background: #25d366;
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .floating-expanded {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    white-space: nowrap;
+    min-width: 220px;
+    margin-left: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease forwards;
+  }
+  
+  .floating-content:hover .floating-icon {
+    display: none;
+  }
+  
+  .floating-content:hover .floating-expanded {
+    display: flex;
+  }
+  
+  .floating-title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  .floating-btn {
+    border-radius: 25px;
+    font-size: 14px;
+    padding: 10px 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .visit-store {
+    background: transparent;
+    border: 2px solid rgb(47, 43, 43);
+    color: rgb(25, 17, 17);
+  }
+  
+  .visit-store:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  .whatsapp-btn {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: rgb(10, 10, 10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .wa-btn-icon {
+    margin-right: 8px;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .floating-expanded {
+      min-width: 180px;
+      padding: 12px;
+    }
+  
+    .floating-btn {
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+  
+    .floating-title {
+      font-size: 13px;
+    }
+  }
+   

@@ -1,0 +1,245 @@
+:root {
+    --brownlight:  #153964;;
+    --browndark:  #153964;
+}
+
+.product-details-content {
+    padding: 1rem;
+    overflow-y: scroll;
+    height: 80vh;
+    scrollbar-width: none;
+}
+
+.product-details-content .details-heading {
+    font-size: 35px;
+    font-weight: 800;
+    color: #153964;
+}
+
+.product-details-content .detail-description {
+    font-size: 14px;
+    font-weight: 400;
+    color: #666;
+}
+
+.price-section {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.price-section .final-price {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.price-section .price {
+    font-size: 20px;
+    margin: 0;
+}
+
+.product-overview .overview-list {
+    text-align: left;
+    padding: 0;
+    list-style-type: none;
+}
+
+.price-section .discount {
+    color: green;
+    font-weight: 600;
+    font-size: 20px;
+    margin: 0;
+}
+
+.product-details-cart-button {
+    margin-top: 2rem;
+    display: flex;
+    gap: 20px;
+}
+
+.add-to-cart {
+    background-color:  #153964;
+    padding: 10px 20px;
+    border-radius: 5px;
+    /* border: none; */
+    color: white;
+    width: 100%;
+    font-size: 18px;      
+    font-weight: 600;
+}
+
+.cartbtn{
+    border: none; 
+    color: white;
+    width: 100%;
+    font-size: 18px;      
+    font-weight: 600;
+    background-color: #153964;
+}
+.buy-now {
+    background-color:  #153964;
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.request-call {
+    background-color: var(--brownlight);
+    color: white !important;
+    border-radius: 20px;
+    padding: 10px 20px;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.cal-contact-section {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    background-color:  #e3eefc;;
+    padding: 10px;
+}
+
+.cal-contact-section p,
+.cal-contact-section h2 {
+    margin: 0;
+}
+
+.call-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.calling-main {
+    display: contents;
+}
+
+.calling-main .icn {
+    font-size: 35px;
+    color:  #153964;
+}
+
+.call-line {
+    font-size: 40px;
+    font-weight: 100;
+}
+
+.carousel-wrapper {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+   
+  }
+  .CategoriesBtn{
+    padding:10px ;
+    border:none;
+    color:white;
+    
+    background-color: #153964;
+  }
+
+  .detailTitle{
+    font-size: 15px;
+    color: #153964;
+  }
+
+    .AddBtn{
+    padding:10px ;
+    border:none;
+    color:white;
+    background-color: #153964;
+    border-radius:0px 10px 10px 0px;
+  }
+.CategoriesBtnHover{
+        padding:10px ;
+    border:none;
+    border-radius: 10px;
+    color:white;
+    background-color: gray;
+}
+
+  .SizeBtn{
+    padding:10px ;
+    border:none;
+    color:white;
+    border-radius: 10px;
+    background-color: #153964;
+  }
+
+  .SizeBtnHover{
+        padding:10px ;
+    border:none;
+    border-radius: 10px;
+    color:white;
+    background-color: gray;
+}
+
+.ThicknesSection{
+    display:flex;
+    flex-wrap: wrap;
+    gap:10px;
+}
+
+.ThicknessSection{
+padding:20px 0px;
+}
+
+  @media (max-width:768px){
+    .cal-contact-section h2{
+       font-size:12px;
+      
+    }
+    .calling-main{
+        display: grid;
+
+    }
+    .calling-main .icn {
+        font-size: 23px;
+        color:  #153964;
+    }
+    .textOr{
+        display: none;
+
+    }
+    .cal-contact-section {
+       justify-content:left;
+       gap: 30px;
+    }
+.mobilenotshow a{
+    display: none;
+}
+.mobilenotshow p{
+   font-size: 12px;
+}
+
+
+    .request-call{
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+    .product-image {
+        width: 100%;
+        height: 85px;
+    }
+    .product-price-section p {
+        font-size: 12px;
+    }
+    
+    .product-details h3 {
+        font-size: 12px;
+    }
+  }
+
+
+

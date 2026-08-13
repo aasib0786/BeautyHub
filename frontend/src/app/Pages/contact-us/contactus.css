@@ -1,0 +1,150 @@
+.contactUs {
+  padding: 4rem 0;
+  background: #f8f9fa;
+}
+
+.contact-details {
+  height:100%;
+  text-align: center;
+  background: #ffffff;
+  padding: 5rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.03);
+  margin-bottom: 2rem;
+}
+
+.contact-details .logo {
+  width: 180px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.contact-mail a {
+  font-size: 20px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  text-decoration: none;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.contact-mail a:hover {
+ color:#355882;
+}
+
+.contact-phone {
+  /* display: flex;
+  flex-direction: column; */
+  align-items: center;
+  font-size: 18px;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.contact-phone a {
+  text-decoration: none;
+  color: #333;
+}
+
+.contact-phone a:hover {
+ color:#355882;
+}
+
+.contact-details address {
+  font-size: 18px;
+  color: #555;
+  margin-top: 1rem;
+  font-style: normal;
+}
+
+.SocialLinks {
+  margin-top: 2rem;
+}
+
+.SocialLinks h4 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.SocialLinks a {
+  color: #444;
+  margin: 0 0.5rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.SocialLinks a:hover {
+  transform: scale(1.2);
+  color:#355882;
+}
+
+/* Form Styling */
+.contactCard {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+}
+
+.contactCard h2 {
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-control {
+  border-radius: 0.5rem;
+  border: 1px solid #ced4da;
+  padding: 0.75rem;
+  font-size: 16px;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
+}
+
+.Contactbutton{
+  background-color: #355882;
+  font-weight: 600;
+  padding: 0.75rem;
+  border: none;
+  color:white;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.ContactTitle{
+  color:#355882 !important;
+}
+
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive spacing */
+@media (max-width: 768px) {
+  .contact-details,
+  .contactCard {
+    padding: 1rem;
+    margin: 0;
+  }
+
+  .contactUs {
+    padding: 2rem 0;
+  }
+
+  .contact-mail a,
+  .contact-details address {
+    font-size: 16px;
+  }
+}

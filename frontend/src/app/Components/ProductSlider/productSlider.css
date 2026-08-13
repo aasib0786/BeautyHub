@@ -1,0 +1,361 @@
+/* ===========================
+   PRODUCT SLIDER — MAIN SECTION
+   =========================== */
+
+.product-slider-section {
+  position: relative;
+  width: 100%;
+}
+
+.slider-header {
+  text-align: center;
+  padding: 0 0 24px;
+}
+
+.slider-header h2 {
+  font-size: clamp(1.2rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+/* Wrapper holds arrows + slider in a row */
+.slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===========================
+   SLIDER TRACK
+   =========================== */
+
+.product-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 8px 4px 16px;
+  scroll-behavior: smooth;
+  flex: 1;
+  /* Push arrows outside */
+}
+
+.product-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.product-slider {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===========================
+   PRODUCT CARD
+   =========================== */
+
+.product-card {
+  min-width: 280px;
+  max-width: 300px;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Image wrapper for positioning the badge */
+.card-img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.product-card:hover .card-img-top {
+  transform: scale(1.04);
+}
+
+/* Discount badge — moved here from JSX span */
+.offer-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #e53935;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  letter-spacing: 0.4px;
+  pointer-events: none;
+}
+
+/* ===========================
+   CARD BODY
+   =========================== */
+
+.card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.description-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ===========================
+   PRICE ROW
+   =========================== */
+
+.price-section {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.mrp {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+
+/* The offer badge is now on the image; removed .offer class from price row */
+
+/* ===========================
+   SHOP BUTTON
+   =========================== */
+
+.shop-link {
+  display: block;
+  text-decoration: none;
+}
+
+.shop-btn {
+  width: 100%;
+  padding: 10px 16px;
+  background: #234977;
+  border: none;
+  border-radius: 30px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+  letter-spacing: 0.3px;
+}
+
+.shop-btn:hover {
+  background: #07325c;
+  transform: scale(1.02);
+}
+
+.shop-btn:active {
+  transform: scale(0.98);
+}
+
+/* ===========================
+   ARROW BUTTONS
+   =========================== */
+
+.arrow-btn {
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, box-shadow 0.2s;
+  z-index: 10;
+}
+
+.arrow-btn:hover {
+  background: #f0f4f8;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.18);
+}
+
+/* ===========================
+   SKELETON LOADING
+   =========================== */
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-img {
+  width: 100%;
+  height: 220px;
+  border-radius: 0;
+}
+
+.skeleton-text {
+  height: 14px;
+  margin-bottom: 6px;
+}
+
+.skeleton-btn {
+  height: 38px;
+  border-radius: 30px;
+  margin-top: 8px;
+}
+
+.w-80 { width: 80%; }
+.w-60 { width: 60%; }
+.w-40 { width: 40%; }
+
+/* ===========================
+   EMPTY STATE
+   =========================== */
+
+.no-products {
+  color: #888;
+  font-size: 15px;
+  padding: 24px 0;
+}
+
+/* ===========================
+   RESPONSIVENESS
+   =========================== */
+
+/* Tablets (≤992px) */
+@media (max-width: 992px) {
+  .product-card {
+    min-width: 255px;
+    max-width: 270px;
+  }
+
+  .card-img-top {
+    height: 195px;
+  }
+}
+
+/* Large phones (≤768px) */
+@media (max-width: 768px) {
+  .arrow-btn {
+    display: none;
+  }
+
+  .slider-wrapper {
+    gap: 0;
+  }
+
+  .product-card {
+    min-width: 235px;
+    max-width: 250px;
+  }
+
+  .card-img-top {
+    height: 175px;
+  }
+
+  .product-title {
+    font-size: 14px;
+  }
+
+  .price {
+    font-size: 16px;
+  }
+
+  .mrp {
+    font-size: 12px;
+  }
+
+  .shop-btn {
+    font-size: 13px;
+    padding: 9px 12px;
+  }
+}
+
+/* Small phones (≤480px) */
+@media (max-width: 480px) {
+  .product-card {
+    min-width: 200px;
+    max-width: 215px;
+  }
+
+  .card-img-top {
+    height: 155px;
+  }
+
+  .product-title {
+    font-size: 13px;
+  }
+
+  .price {
+    font-size: 14px;
+  }
+
+  .description-clamp {
+    font-size: 12px;
+    -webkit-line-clamp: 2;
+  }
+
+  .shop-btn {
+    font-size: 12px;
+    padding: 8px;
+  }
+}
+
+/* Very small (≤360px) */
+@media (max-width: 360px) {
+  .product-card {
+    min-width: 175px;
+    max-width: 190px;
+  }
+
+  .card-img-top {
+    height: 140px;
+  }
+
+  .price {
+    font-size: 13px;
+  }
+}

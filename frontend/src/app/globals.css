@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  --brown: #153964;
+  --blue: #153964;
+}
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.pretty-breadcrumb {
+  background: lightgray;
+  padding: 1.25rem 0;
+  border-radius: 0rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.pretty-breadcrumb .breadcrumb {
+  background: none;
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pretty-breadcrumb .breadcrumb-item {
+  display: flex;
+  align-items: center;
+  color: #555;
+}
+
+.pretty-breadcrumb .breadcrumb-item+.breadcrumb-item::before {
+  content: "›";
+  color: #999;
+  padding: 0 0.5rem;
+  font-size: 18px;
+}
+
+.breadcrumb-link {
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.breadcrumb-link:hover {
+  color: #0056b3;
+}
+
+.breadcrumb-item+.breadcrumb-item {
+  padding: 0 !important;
+}
+
+.breadcrumb-item.active {
+  color: var(--brown) !important;
+  font-weight: 600 !important;
+}
+
+
+/* product section  */
+
+
+.product-card {
+  margin-bottom: 1rem;
+}
+
+.product-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s;
+}
+
+.product-image {
+  width: 100%;
+  height: 300px;
+  border-radius: 0;
+  object-fit: cover;
+  box-shadow: none;
+}
+
+.product-details h3 {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000000c9;
+  margin: 0;
+}
+.themeColor{
+  background: #153964 !important;; 
+}
+
+
+.product-price-section {
+  display: flex;
+  gap: 10px;
+}
+
+.product-details {
+  margin-top: 0.3rem;
+}
+
+.product-price-section p {
+  margin: 0;
+}
+
+.product-price-section .discount {
+  color: green;
+  font-weight: 500;
+}
+
+@media only screen and (max-width:768px) {
+  
+.product-image {
+  width: 100%;
+  height: 130px;
+}
+
+.product-details h3 {
+  font-size: 14px;
+}
+.product-price-section {
+  gap: 5px;
+}
+
+.product-price-section p{
+  font-size: 10px;
+}
+}

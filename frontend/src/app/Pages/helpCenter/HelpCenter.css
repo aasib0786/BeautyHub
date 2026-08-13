@@ -1,0 +1,81 @@
+.help-center {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #fcfcfc;
+    color: #333;
+  }
+  
+  .help-hero {
+    background: linear-gradient(to right,#336bb0, #5578a4);
+    padding: 80px 20px;
+    text-align: center;
+    color: white;
+    border-radius: 0 0 60px 60px;
+  }
+  
+  .help-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .help-hero p {
+    font-size: 1.2rem;
+  }
+  
+  .help-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+  
+  .help-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .help-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .help-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #153964;
+  }
+  
+  .help-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  @media (max-width: 768px) {
+    .help-container {
+      display: block;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 20px auto;
+    }
+  
+    .help-hero{
+      padding: 20px 10px;
+    }
+    .help-hero h1 {
+      font-size: 2.2rem;
+    }
+  
+    .help-hero p {
+      font-size: 1rem;
+    }
+    .help-card{
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  }
+  

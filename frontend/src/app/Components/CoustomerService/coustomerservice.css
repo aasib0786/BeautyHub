@@ -1,0 +1,87 @@
+.CoustomerServiceMainSec{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:100px;
+
+}
+
+.CoustomerServiceImageSec{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.CoustomerServiceTitle{
+    text-align: center;
+    font-weight: 550 !important;
+    font-family: Tiempos;
+    font-size: 2.5rem;
+ color:#153964;
+
+}
+
+.CoustomerServiceSubTitle{
+    text-align: center;
+    font-weight: 550 !important;
+    font-family: Tiempos;
+ color:#153964;
+
+    font-size: 2.3rem;
+}
+
+.ServiceFeature {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;          /* ⭐ allows wrapping on small screens */
+    justify-content: center;  /* keeps items centered */
+}
+
+.spanFeature {
+    border-radius: 15px;
+    white-space: nowrap;      /* prevents text breaking */
+}
+
+
+
+@media (max-width:768px){
+    .ServiceIcon{
+        width: 50%;
+        height: 50%;
+    }
+
+    .CoustomerServiceTitle{
+        font-size: 24px;
+    }
+    .CoustomerServiceSubTitle{
+        font-size: 1.3rem;
+    }
+    .ServiceFeature span{
+        border-radius: 15px;
+        font-size: 10px;
+        height: 35px;
+    }
+
+    .ServiceFeature {
+        display: flex;
+        gap: 6px;             /* smaller gap for mobile */
+        flex-wrap: wrap;      /* ⭐ wrap on mobile */
+        justify-content: center;
+    }
+
+    .ServiceFeature span {
+        font-size: 10px;
+        height: auto;
+        border-radius: 12px;
+    }
+
+    .spanFeature {
+        padding: 8px 12px !important;  /* cleaner mobile padding */
+        border-radius: 12px;
+    }
+    .CoustomerServiceMainSec{
+        padding:30px;
+    }
+}
+

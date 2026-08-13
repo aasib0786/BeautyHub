@@ -1,0 +1,515 @@
+/* navbar.css */
+
+/* ── CSS Variables ─────────────────────────────────────────────────────────── */
+:root {
+  --nb-blue:        #153964;
+  --nb-blue-dark:   #0f2847;
+  --nb-brown:       #8B4513;
+  --nb-brown-dark:  #6d3410;
+  --nb-text:        #333;
+  --nb-muted:       #666;
+  --nb-border:      #eaeaea;
+  --nb-white:       #ffffff;
+  --nb-radius:      6px;
+}
+
+/* ── Top Navbar ──────────────────────────────────────────────────────────────*/
+.top-navbar {
+  background: var(--nb-blue);
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.top-nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.2s;
+  font-size: 0.82rem;
+}
+.top-nav-link:hover {
+  color: #fff !important;
+}
+
+/* ── Middle Navbar ───────────────────────────────────────────────────────────*/
+.middle-navbar {
+  background: var(--nb-white);
+  border-bottom: 1px solid var(--nb-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Logo divider */
+.nb-logo-divider {
+  width: 1px;
+  height: 36px;
+  background: #ddd;
+  flex-shrink: 0;
+}
+
+/* ── Search bar ──────────────────────────────────────────────────────────────*/
+.nb-search {
+  max-width: 440px;
+}
+
+.nb-search-input {
+  font-size: 0.85rem;
+  border-radius: var(--nb-radius) 0 0 var(--nb-radius) !important;
+  border-right: none !important;
+  background: #f8f8f8;
+  color: var(--nb-text);
+}
+.nb-search-input:focus {
+  box-shadow: none;
+  border-color: var(--nb-blue);
+  background: #fff;
+}
+
+.nb-search-btn {
+  border: 1px solid #dee2e6;
+  border-left: none;
+  border-radius: 0 var(--nb-radius) var(--nb-radius) 0;
+  background: var(--nb-white);
+  color: var(--nb-blue);
+  padding: 0 14px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+}
+.nb-search-btn:hover {
+  background: var(--nb-blue);
+  color: #fff;
+  border-color: var(--nb-blue);
+}
+
+/* ── Action links (wishlist, profile) ────────────────────────────────────────*/
+.nb-action-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--nb-text) !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.nb-action-link:hover {
+  color: var(--nb-blue) !important;
+}
+
+/* ── Action button (cart) ────────────────────────────────────────────────────*/
+.nb-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--nb-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 0;
+  transition: color 0.2s;
+}
+.nb-action-btn:hover {
+  color: var(--nb-blue);
+}
+
+/* ── Badge ───────────────────────────────────────────────────────────────────*/
+.nb-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nb-blue);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  padding: 0 5px;
+  line-height: 1;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────────*/
+/* Primary (filled) — uses brand blue to match navbar */
+.nb-btn-primary {
+  background-color: var(--nb-blue) !important;
+  color: #fff !important;
+  border: 1px solid var(--nb-blue) !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-radius: var(--nb-radius);
+  transition: background 0.2s, border-color 0.2s;
+}
+.nb-btn-primary:hover {
+  background-color: var(--nb-blue-dark) !important;
+  border-color: var(--nb-blue-dark) !important;
+  color: #fff !important;
+}
+
+/* Outline variant */
+.nb-btn-outline {
+  background: transparent !important;
+  color: var(--nb-blue) !important;
+  border: 1px solid var(--nb-blue) !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-radius: var(--nb-radius);
+  transition: background 0.2s, color 0.2s;
+}
+.nb-btn-outline:hover {
+  background-color: var(--nb-blue) !important;
+  color: #fff !important;
+}
+
+/* Legacy .btn-brown kept for any existing usage */
+.btn-brown {
+  background-color: var(--nb-blue) !important;
+  color: #fff !important;
+  border: 1px solid var(--nb-blue) !important;
+  transition: background 0.2s;
+}
+.btn-brown:hover {
+  background-color: var(--nb-blue-dark) !important;
+}
+
+/* ── Bottom Navbar (mega menu) ───────────────────────────────────────────────*/
+.bottom-navbar {
+  background-color: var(--nb-blue);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.nav-link {
+  padding: 0.55rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9) !important;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav-link:hover {
+  color: #fff !important;
+}
+
+/* Mega dropdown */
+.nav-item.dropdown {
+  position: static;
+}
+
+.mega-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  padding: 28px 30px;
+  border-top: 2px solid var(--nb-blue);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+}
+
+.nav-item.dropdown:hover .mega-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.mega-dropdown h4 {
+  color: var(--nb-blue);
+  margin-bottom: 18px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--nb-border);
+  padding-bottom: 10px;
+}
+
+.dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.dropdown-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Sub-category header */
+.first-dropdown-item {
+  font-weight: 700 !important;
+  color: var(--nb-blue) !important;
+  font-size: 0.85rem;
+  pointer-events: none;
+  cursor: default;
+  padding: 6px 0 !important;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--nb-border);
+}
+
+.mega-dropdown .dropdown-item {
+  display: block;
+  padding: 5px 0;
+  color: var(--nb-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  transition: color 0.2s, padding-left 0.2s;
+  background: none;
+}
+.mega-dropdown .dropdown-item:hover {
+  color: var(--nb-blue);
+  padding-left: 6px;
+}
+
+/* ── Flipkart-style 3-Level Hierarchical Mega Dropdown ───────────────────────*/
+.flipkart-mega-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  padding: 10px 0;
+}
+
+.flipkart-cat-col {
+  flex: 1;
+  min-width: 170px;
+  max-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.flipkart-cat-title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--nb-blue);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1.5px solid #eee;
+  transition: color 0.2s;
+}
+
+.flipkart-cat-title:hover {
+  color: #c9a84c;
+}
+
+.flipkart-sub-item {
+  font-size: 0.82rem;
+  color: #555;
+  text-decoration: none;
+  padding: 3px 0;
+  transition: color 0.2s;
+}
+
+.flipkart-sub-item:hover {
+  color: var(--nb-blue);
+  font-weight: 600;
+}
+
+/* ── Main Categories Mega Dropdown Grid ──────────────────────────────────────*/
+.main-cat-dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.main-cat-card-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fdfdfd;
+  text-decoration: none !important;
+  transition: all 0.25s ease;
+}
+
+.main-cat-card-item:hover {
+  background: #ffffff;
+  border-color: var(--nb-blue);
+  box-shadow: 0 4px 14px rgba(21, 57, 100, 0.12);
+  transform: translateY(-2px);
+}
+
+.main-cat-img-box {
+  width: 42px;
+  height: 42px;
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.main-cat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-cat-title {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--nb-blue);
+  line-height: 1.25;
+}
+
+.main-cat-subtitle {
+  font-size: 0.72rem;
+  color: #777;
+  margin-top: 2px;
+}
+
+/* ── Mobile topbar ───────────────────────────────────────────────────────────*/
+.responsive-topbar {
+  display: none;
+  background: #fff;
+  border-bottom: 1px solid var(--nb-border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* Mobile slide menu */
+.mobile-menu-dropdown {
+  background: #fff;
+  border-top: 1px solid var(--nb-border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.mobile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  color: var(--nb-text) !important;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.15s, color 0.15s;
+}
+.mobile-menu-item:hover {
+  background: #f4f8ff;
+  color: var(--nb-blue) !important;
+}
+
+/* ── Mobile bottom tab bar ───────────────────────────────────────────────────*/
+.responsive-navbar {
+  display: none;
+}
+
+.responsive-main {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.responsive-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1;
+  padding: 8px 0;
+  text-decoration: none;
+  color: var(--nb-muted);
+  font-size: 0.65rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.responsive-tab:hover,
+.responsive-tab:active {
+  color: var(--nb-blue);
+}
+
+.responsive-icons {
+  font-size: 1.35rem;
+  color: inherit;
+  display: block;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────────*/
+@media (max-width: 768px) {
+
+  /* Hide desktop navbar entirely */
+  .main-navbar {
+    display: none;
+  }
+
+  /* Show mobile topbar */
+  .responsive-topbar {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+
+  /* Show mobile bottom tab bar */
+  .responsive-navbar {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: #fff;
+    border-top: 1px solid var(--nb-border);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Push page content above the tab bar */
+  body {
+    padding-bottom: 64px;
+  }
+
+  /* Full-width search on mobile */
+  .nb-search {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* Mega dropdown flat on mobile (shouldn't appear — but safety net) */
+  .mega-dropdown {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    padding: 14px;
+    border-top: none;
+  }
+  .dropdown-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) {
+  /* Ensure desktop navbar visible */
+  .main-navbar {
+    display: block;
+  }
+  .responsive-topbar,
+  .responsive-navbar {
+    display: none !important;
+  }
+}

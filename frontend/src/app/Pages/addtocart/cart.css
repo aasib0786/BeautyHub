@@ -1,0 +1,125 @@
+.cart-page {
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  .cart-item {
+    border-bottom: 3px solid #eee;
+  }
+  .price-summary {
+    padding:30px;
+  }
+  .qty-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 30px;
+  }
+  
+  .qty-box button {
+    background-color: #f8f9fa;
+    border: none;
+    padding: 0 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .qty-box span {
+    padding: 0 12px;
+    font-weight: 500;
+  }
+  .leftTextSec{
+    padding:20px
+  }
+  .price-text {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  
+  .action-btn {
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .price-summary {
+    background-color: #ffffffe7;
+    border: 3px solid #eee;
+    font-size: 15px;
+  }
+  
+  .place-order-btn {
+    width: 100%;
+    background-color:#153964!important;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .place-order-btn:hover {
+    background-color: #153964!important;
+    
+  }
+ 
+  .themeColor{
+    color: #153964;
+  }
+    
+
+  @media (max-width: 992px) {
+    .cart-item {
+      flex-direction: column;
+      align-items: flex-start;
+      margin:0;
+    }
+  
+    
+    .cart-item img {
+      width: 50% !important;
+      height: auto !important;
+      margin-bottom: 10px;
+    }
+  
+    .cart-item .flex-grow-1 {
+      width: 100%;
+    }
+  
+    .qty-box {
+      margin-top: 10px;
+    }
+  
+    .price-text {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  
+    .action-btn {
+      display: inline-block;
+      margin-top: 8px;
+    }
+  
+    .price-summary {
+      margin-top: 0px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .price-summary {
+      padding: 20px 15px;
+      font-size: 14px;
+    }
+  
+    .place-order-btn {
+      padding: 10px;
+      font-size: 14px;
+    }
+  
+    .price-summary .fw-bold.fs-6 {
+      font-size: 16px;
+    }
+  }
+  

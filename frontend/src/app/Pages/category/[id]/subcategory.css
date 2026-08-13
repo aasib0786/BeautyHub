@@ -1,0 +1,154 @@
+.category-page {
+    padding: 2rem 0;
+}
+
+.heading-section {
+    margin-bottom: 2rem;
+}
+
+.heading-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.heading-section p {
+    font-size: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.category-card {
+    margin-bottom: 2rem;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.category-card a {
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+
+.category-card img {
+    width: 100%;
+    height: auto;
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    margin: 0 auto;
+}
+
+.category-card img:hover {
+    transform: scale(1.09);
+}
+
+.category-product-nam {
+    font-size: 16px;
+    color: gray;
+    margin-top: 10px;
+}
+
+.category-product-nam:hover {
+    color: var(--brown);
+}
+
+
+.heading-section  h1{
+    font-size: 3rem;
+    font-weight: bold;
+    color: #153964;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+
+
+
+
+
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .heading-section h1 {
+        font-size: 2.2rem;
+    }
+    .heading-section h1{
+        margin: 0;
+    }
+
+}
+
+@media (max-width: 992px) {
+    .heading-section h1 {
+        font-size: 2rem;
+    }
+    
+    .category-card {
+        margin-bottom: 1.5rem;
+        padding: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .heading-section h1 {
+        font-size: 1.8rem;
+    }
+    .category-page {
+        padding: 1rem 0 0;
+    }
+    
+    .heading-section p {
+        font-size: 0.9rem;
+        padding: 0 1rem;
+    }
+    
+    .category-card img {
+        max-width: 150px;
+        max-height: 150px;
+    }
+    
+    .category-product-nam {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .heading-section h1 {
+        font-size: 1.5rem;
+    }
+    
+    .heading-section p {
+        font-size: 0.8rem;
+    }
+    
+    .category-card {
+        margin-bottom: 1rem;
+    }
+    
+    /* .imageSec {
+        width: 140px!important;
+        height: 140px !important;
+    } */
+    
+    .category-product-nam {
+        font-size: 13px;
+    }
+    
+    /* Adjust grid columns for very small screens */
+    .row {
+        margin: 0 -5px;
+    }
+    
+    .col-xs-12 {
+        padding: 0 5px;
+    }
+}
+
+
+.no-subcategories {
+    text-align: center;
+    font-size: 18px;
+    color: #888;
+    padding: 20px;
+  }

@@ -1,0 +1,329 @@
+/* ── Root ──────────────────────────────────────────────────────────────────── */
+.hc-root {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  /* border-radius: 16px; */
+  background: #111;
+  /* Banner height — change here to control size */
+  height: 520px;
+  user-select: none;
+}
+
+/* ── Track ─────────────────────────────────────────────────────────────────── */
+.hc-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Slide ─────────────────────────────────────────────────────────────────── */
+.hc-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+
+.hc-slide--active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* ── Image wrapper ─────────────────────────────────────────────────────────── */
+.hc-img-wrap {
+  /* position: absolute; */
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hc-img {
+  width: 100%;
+  height: 100%;
+  /* object-fit: cover;       fills banner area nicely */
+  /* object-position: center; */
+  display: block;
+}
+
+/* ── Gradient overlay ──────────────────────────────────────────────────────── */
+.hc-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.3) 55%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Caption ───────────────────────────────────────────────────────────────── */
+.hc-caption {
+  position: absolute;
+  top: 50%;
+  left: 6%;
+  transform: translateY(-40%);
+  z-index: 2;
+  max-width: 520px;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
+}
+
+.hc-caption--visible {
+  opacity: 1;
+  transform: translateY(-50%);
+}
+
+.hc-eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.hc-title {
+  font-family: 'Poppins', Georgia, serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.hc-desc {
+  font-size: clamp(0.82rem, 1.5vw, 1rem);
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.65;
+  margin: 0 0 22px;
+  max-width: 420px;
+}
+
+/* ── CTA Button ────────────────────────────────────────────────────────────── */
+.hc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #8a3b6b, #c9a84c);
+  color: #fff !important;
+  text-decoration: none !important;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition: transform 0.2s, opacity 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.hc-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.92;
+  color: #fff !important;
+}
+
+.hc-btn-arrow {
+  font-size: 1rem;
+  transition: transform 0.2s;
+}
+
+.hc-btn:hover .hc-btn-arrow {
+  transform: translateX(4px);
+}
+
+/* ── Prev / Next controls ──────────────────────────────────────────────────── */
+.hc-ctrl {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  backdrop-filter: blur(6px);
+}
+
+.hc-ctrl:hover {
+  background: rgba(201, 168, 76, 0.5);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.hc-ctrl--prev { left: 16px; }
+.hc-ctrl--next { right: 16px; }
+
+/* ── Dots ──────────────────────────────────────────────────────────────────── */
+.hc-dots {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.hc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s, width 0.3s, border-radius 0.3s;
+}
+
+.hc-dot--active {
+  background: #c9a84c;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* ── Progress bar ──────────────────────────────────────────────────────────── */
+.hc-progress-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  z-index: 10;
+}
+
+.hc-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #8a3b6b, #c9a84c);
+}
+
+.hc-progress-bar--running {
+  animation: hcProgress 4.5s linear forwards;
+}
+
+@keyframes hcProgress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+/* ── Empty state ───────────────────────────────────────────────────────────── */
+.hc-empty {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f0ff;
+  border-radius: 16px;
+  color: #8a6e2f;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 992px) {
+  .hc-root {
+    height: 420px;
+    border-radius: 12px;
+  }
+
+  .hc-caption {
+    max-width: 400px;
+  }
+}
+
+/* Mobile landscape */
+@media (max-width: 768px) {
+  .hc-root {
+    height: 340px;
+    border-radius: 10px;
+  }
+
+  .hc-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(0, 0, 0, 0.2) 60%,
+      transparent 100%
+    );
+  }
+
+  .hc-caption {
+    top: auto;
+    bottom: 52px;
+    left: 0;
+    right: 0;
+    transform: none !important;
+    max-width: 100%;
+    padding: 0 18px;
+    text-align: center;
+  }
+
+  .hc-caption--visible {
+    transform: none !important;
+  }
+
+  .hc-desc {
+    display: none; /* hide description on small screens */
+  }
+
+  .hc-btn {
+    padding: 10px 22px;
+    font-size: 0.82rem;
+  }
+
+  .hc-ctrl {
+    width: 36px;
+    height: 36px;
+  }
+
+  .hc-ctrl--prev { left: 8px; }
+  .hc-ctrl--next { right: 8px; }
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+  .hc-root {
+    height: 260px;
+    border-radius: 8px;
+  }
+
+  .hc-title {
+    font-size: 1.2rem;
+  }
+
+  .hc-eyebrow {
+    font-size: 0.6rem;
+  }
+
+  .hc-btn {
+    padding: 8px 18px;
+    font-size: 0.78rem;
+  }
+
+  .hc-ctrl {
+    display: none; /* hide arrows on very small screens */
+  }
+}

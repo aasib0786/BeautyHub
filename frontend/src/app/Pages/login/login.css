@@ -1,0 +1,389 @@
+.login-furniture-container {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(to right, #f7f1e3, #ffffff);
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-furniture-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.login-furniture-left {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  filter: brightness(0.85);
+}
+
+.logintext h1{
+  color: #4e342e;
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem; 
+}
+
+.logintext p{
+  color: #4e342e;
+  font-size: 1.3rem;
+  font-weight:bold;
+
+}
+
+.furniture-overlay-text {
+  /* position: absolute; */
+  /* bottom: 10%; */
+  /* left: 10%; */
+  color:#153964;
+}
+
+.furniture-overlay-text h1 {
+  color: #153964 !important;
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.furniture-overlay-text p {
+  font-size: 1.3rem;
+}
+
+.login-furniture-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+}
+
+.furniture-form-card {
+  width: 100%;
+  max-width: 450px;
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.furniture-form-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #153964;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.furniture-input-group {
+  margin-bottom: 1.2rem;
+}
+
+.furniture-input-group input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.furniture-input-group input:focus {
+  border-color: #6d554c;
+  outline: none;
+}
+
+.error-text {
+  font-size: 0.8rem;
+  color: #d32f2f;
+  margin-top: 0.2rem;
+}
+
+.success-text,
+.info-text {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.success-text {
+  color: #388e3c;
+}
+
+.info-text {
+  color: #8d6e63;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+  margin-right: 5px;
+}
+
+.email-with-button {
+  position: relative;
+}
+
+.email-with-button input {
+  padding-right: 120px; /* Space for button */
+}
+
+.small-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background-color: #8d6e63;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.small-btn:hover {
+  background-color: #153964;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.furniture-submit-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: #8d6e63;
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+.furniture-submit-btn:hover {
+  background-color: #153964;
+}
+
+.help-text {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.LogInTitle{
+  color:#153964 !important;
+}
+.LogInSubTitle{
+  color:#355882 !important;
+
+}
+
+.help-text a {
+  color: #8d6e63;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.google-btn{
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  background-color: transparent;
+  color: black;
+  border: 1px solid lightgray;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.google-icon{
+  height: 20px;
+  width: 20px;
+}
+
+
+
+
+@media (max-width: 991px) {
+  .login-furniture-wrapper {
+    flex-direction: column;
+  }  
+
+  .login-furniture-left,
+  .login-furniture-right {
+    flex: none;
+    width: 100%;
+  }  
+
+  .login-furniture-left {
+    height: 280px;
+  }  
+
+  .furniture-overlay-text {
+    bottom: 5%;
+    left: 5%;
+    text-align: center;
+    width: 90%;
+  }  
+
+  .furniture-overlay-text h1 {
+    font-size: 2.2rem;
+  }  
+
+  .furniture-overlay-text p {
+    font-size: 1.1rem;
+  }  
+
+  .login-furniture-right {
+    padding: 1rem 1rem;
+  }  
+}  
+
+/* For Mobile */
+@media (max-width: 768px) {
+  .furniture-overlay-text img{
+    width: 100%;
+    height: 100%;
+  }
+  .login-furniture-wrapper{
+    padding: 1rem 0;
+  }
+}
+
+/* For Mobile */
+@media (max-width: 576px) {
+  .furniture-form-card {
+    padding: 2rem 1rem 0px;
+  }  
+
+  .furniture-form-title {
+    font-size: 1.7rem;
+  }  
+
+  .email-with-button input {
+    padding-right: 90px;
+  }  
+
+  .small-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }  
+
+  .furniture-input-group input {
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }  
+
+  .furniture-submit-btn {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }  
+
+  .help-text {
+    font-size: 0.85rem;
+  }  
+}  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* .login-form-heading{
+    font-size: 30px;
+    color: brown;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .login-btn{
+    width: 100%;
+    color: white;
+    background-color: #153964;
+    padding: 10px 20px;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .login-form{
+    border: 20px solid #153964;
+    padding: 20px;
+    height: 100%;
+  }
+  
+  .login-form-text{
+    font-size: 16px;
+    color: black;
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .login-form-text a{
+    color: #153964;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .google-btn{
+    width: 100%;
+    padding: 10px 20px;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    background-color: transparent;
+    color: black;
+    border: 1px solid lightgray;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .google-icon{
+    height: 20px;
+    width: 20px;
+  }
+  
+  .form-input{
+    width: 100%;
+    border: 1px solid lightgray;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    background-color: white;
+  }
+     */
