@@ -28,9 +28,15 @@ const AddProduct = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [selectedBrand, setSelectedBrand] = useState(null);
 
+  // AI Product Auto-Generation State
+  const [aiImages, setAiImages] = useState([]);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiProgressStep, setAiProgressStep] = useState("");
+
   // Features list state
   const [featureInput, setFeatureInput] = useState("");
   const [features, setFeatures] = useState([]);
+
 
   // SEO Attributes (Multiple Key-Value Pairs) state
   const [seoAttributes, setSeoAttributes] = useState([
@@ -312,6 +318,117 @@ const AddProduct = () => {
     }
   };
 
+  const handleAiGenerate = async (autoSaveMode = false) => {
+    if (!aiImages || aiImages.length === 0) {
+      toast.error("Please select at least 1 image for AI Auto-Generation!");
+      return;
+    }
+    setIsAiLoading(true);
+    setAiProgressStep("Uploading images to Cloudinary & Analyzing Vision...");
+
+    const payload = new FormData();
+    aiImages.forEach((img) => payload.append("images", img));
+    payload.append("autoSave", autoSaveMode ? "true" : "false");
+
+    try {
+      const res = await axiosInstance.post("/api/v1/product/ai-auto-create", payload, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (res.data?.success) {
+        toast.success(res.data.message || "AI Auto-Generation completed!");
+
+        // Re-fetch category & brand lists so newly created ones show up!
+        const [mainRes, catRes, subRes, brandRes] = await Promise.all([
+          axiosInstance.get("/api/v1/main-category/get-all-main-categories"),
+          axiosInstance.get("/api/v1/category/get-all-categories"),
+          axiosInstance.get("/api/v1/sub-category/get-all-sub-categories"),
+          axiosInstance.get("/api/v1/brand/get-all-brands"),
+        ]);
+
+        const mains = mainRes?.data?.data || [];
+        const cats = catRes?.data?.data || [];
+        const subs = subRes?.data?.data || [];
+        const brands = brandRes?.data?.data || [];
+
+        setMainCategoryList(mains);
+        setCategoryList(cats);
+        setSubcategoryList(subs);
+        setBrandList(brands);
+
+        if (autoSaveMode) {
+          navigate("/all-products");
+          return;
+        }
+
+        // Pre-fill form data if in Auto-Fill mode
+        const data = res.data.data;
+        if (data) {
+          setFormData((prev) => ({
+            ...prev,
+            productName: data.productName || "",
+            price: data.price || 0,
+            discount: data.discount || 0,
+            finalPrice: data.finalPrice || 0,
+            description: data.description || "",
+            material: data.material || "",
+            weight: data.weight || "",
+            sku: data.sku || "",
+            specifications: data.specifications || "",
+            ingredients: data.ingredients || "",
+            howToUse: data.howToUse || "",
+            safetyInfo: data.safetyInfo || "",
+            skinType: data.skinType || "",
+            idealFor: data.idealFor || "",
+            form: data.form || "",
+            shelfLife: data.shelfLife || "",
+            countryOfOrigin: data.countryOfOrigin || "India",
+            manufacturerDetails: data.manufacturerDetails || "",
+            metaTitle: data.metaTitle || "",
+            metaDescription: data.metaDescription || "",
+            metaKeywords: data.metaKeywords || "",
+          }));
+
+          if (data.features && Array.isArray(data.features)) {
+            setFeatures(data.features);
+          }
+
+          if (data.mainCategoryObj) {
+            setSelectedMainCategory(data.mainCategoryObj);
+            const matchingCats = cats.filter((c) => (c?.mainCategory?._id || c?.mainCategory) === data.mainCategoryObj._id);
+            setFilteredCategoryList(matchingCats.length > 0 ? matchingCats : cats);
+          }
+
+          if (data.categoryObj) {
+            setSelectedCategory(data.categoryObj);
+            const matchingSubs = subs.filter((s) => (s?.Category?._id || s?.Category) === data.categoryObj._id);
+            setFilteredSubcategoryList(matchingSubs.length > 0 ? matchingSubs : subs);
+          }
+
+          if (data.subCategoryObj) {
+            setSelectedSubCategory(data.subCategoryObj);
+          }
+
+          if (data.brandObj) {
+            setSelectedBrand(data.brandObj);
+          }
+
+          // Use the uploaded AI images as product images if user wants
+          setFormData((prev) => ({
+            ...prev,
+            images: [...aiImages],
+          }));
+        }
+      }
+    } catch (err) {
+      console.error("AI Generation error:", err);
+      toast.error(err?.response?.data?.message || "AI Auto-Generation failed. Please try again.");
+    } finally {
+      setIsAiLoading(false);
+      setAiProgressStep("");
+    }
+  };
+
   useEffect(() => {
     let total = parseFloat(
       formData.price * (1 - formData.discount / 100)
@@ -333,8 +450,173 @@ const AddProduct = () => {
         </div>
       </div>
 
+      {/* ✨ AI Magic Product & Category Auto-Creator Card */}
+      <div
+        className="card mb-4 border-0"
+        style={{
+          background: "linear-gradient(135deg, #153964 0%, #255285 50%, #795548 100%)",
+          color: "#fff",
+          borderRadius: "16px",
+          padding: "24px",
+          boxShadow: "0 10px 30px rgba(21, 57, 100, 0.25)",
+        }}
+      >
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+          <div>
+            <h3 style={{ margin: 0, fontWeight: "700", fontSize: "1.35rem", color: "#f3c623" }}>
+              ✨ AI Magic Product & Category Creator
+            </h3>
+            <p style={{ margin: "4px 0 0", opacity: 0.9, fontSize: "0.88rem" }}>
+              Select multiple product images — AI will analyze images, auto-create Main Category, Category, Sub Category, Brand, and fill all product fields!
+            </p>
+          </div>
+          <span
+            className="badge"
+            style={{
+              background: "rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(4px)",
+              fontSize: "0.78rem",
+              padding: "6px 14px",
+              borderRadius: "20px",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+            }}
+          >
+            Multimodal Vision AI
+          </span>
+        </div>
+
+        <div className="row g-3 align-items-center">
+          <div className="col-md-6">
+            <label className="form-label text-white fw-bold" style={{ fontSize: "0.85rem" }}>
+              Select Product Images for AI:
+            </label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              className="form-control"
+              style={{ background: "#ffffff", color: "#333", borderRadius: "8px", fontWeight: "500" }}
+              onChange={(e) => {
+                const selectedFiles = Array.from(e.target.files);
+                setAiImages(selectedFiles);
+                setFormData((prev) => ({
+                  ...prev,
+                  images: selectedFiles,
+                }));
+              }}
+            />
+            {aiImages.length > 0 && (
+              <div className="mt-2">
+                <small className="text-warning d-block fw-semibold mb-2" style={{ fontSize: "0.82rem" }}>
+                  ✓ {aiImages.length} image(s) selected:
+                </small>
+                <div className="d-flex flex-wrap gap-2">
+                  {aiImages.map((file, idx) => {
+                    const previewUrl = typeof file === "string" ? file : URL.createObjectURL(file);
+                    return (
+                      <div
+                        key={idx}
+                        style={{
+                          position: "relative",
+                          width: "70px",
+                          height: "70px",
+                          borderRadius: "10px",
+                          overflow: "hidden",
+                          border: "2px solid #f3c623",
+                          background: "#ffffff",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                        }}
+                      >
+                        <img
+                          src={previewUrl}
+                          alt={`preview-${idx}`}
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                        <button
+                          type="button"
+                          title="Remove image"
+                          onClick={() => {
+                            const updated = aiImages.filter((_, i) => i !== idx);
+                            setAiImages(updated);
+                            setFormData((prev) => ({ ...prev, images: updated }));
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "2px",
+                            right: "2px",
+                            background: "rgba(220, 53, 69, 0.9)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "50%",
+                            width: "20px",
+                            height: "20px",
+                            fontSize: "11px",
+                            fontWeight: "bold",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            lineHeight: 1,
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+
+          <div className="col-md-6 d-flex gap-2 align-items-end justify-content-md-end flex-wrap">
+            <button
+              type="button"
+              className="btn btn-warning fw-bold d-flex align-items-center gap-2"
+              disabled={isAiLoading || aiImages.length === 0}
+              onClick={() => handleAiGenerate(false)}
+              style={{ borderRadius: "10px", padding: "10px 20px", color: "#153964" }}
+            >
+              {isAiLoading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Analyzing...
+                </>
+              ) : (
+                <>✨ AI Auto-Fill Form</>
+              )}
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-success fw-bold d-flex align-items-center gap-2"
+              disabled={isAiLoading || aiImages.length === 0}
+              onClick={() => handleAiGenerate(true)}
+              style={{ borderRadius: "10px", padding: "10px 20px" }}
+            >
+              {isAiLoading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Saving...
+                </>
+              ) : (
+                <>⚡ AI One-Click Auto-Save</>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {isAiLoading && (
+          <div className="mt-3 p-2 bg-white bg-opacity-10 rounded text-warning text-center fw-semibold" style={{ fontSize: "0.88rem" }}>
+            {aiProgressStep || "AI is processing images and generating category hierarchy..."}
+          </div>
+        )}
+      </div>
+
       <div className="d-form">
         <form className="row g-3 mt-2" onSubmit={handleSubmit}>
+
           {/* Section 1: Category & Brand */}
           <h3
             style={{

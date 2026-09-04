@@ -189,10 +189,45 @@ const verifyPayment = async (req, res) => {
 
 const GetAllOrders = async (req, res) => {
   try {
-    const orders = await Checkout.find();
+    const userRole = (req?.user?.role || "").toLowerCase();
+    const userId = req?.user?._id;
+
+    const orders = await Checkout.find()
+      .populate({
+        path: "items.productId",
+        populate: { path: "createdBy", select: "name email role" },
+      })
+      .populate("userId", "name email phone")
+      .sort({ createdAt: -1 });
+
+    if (userRole === "vendor") {
+      const vendorOrders = orders
+        .filter((order) =>
+          order.items?.some(
+            (item) =>
+              item.productId &&
+              item.productId.createdBy &&
+              (item.productId.createdBy._id || item.productId.createdBy).toString() === userId.toString()
+          )
+        )
+        .map((order) => {
+          const orderObj = order.toObject();
+          orderObj.items = orderObj.items.filter(
+            (item) =>
+              item.productId &&
+              item.productId.createdBy &&
+              (item.productId.createdBy._id || item.productId.createdBy).toString() === userId.toString()
+          );
+          return orderObj;
+        });
+
+      return res.status(200).json({ message: "Vendor orders", orders: vendorOrders });
+    }
+
     return res.status(200).json({ message: "All orders", orders });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error", error });
+    console.error("GetAllOrders error:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -211,20 +246,57 @@ const GetSingleOrder = async (req, res) => {
 
 const GetOrderById = async (req, res) => {
   try {
-   
     const { id } = req.params;
-    const order = await Checkout.findById(id).populate("items.productId userId");
+    const order = await Checkout.findById(id).populate({
+      path: "items.productId",
+      populate: { path: "createdBy", select: "name email role" },
+    }).populate("userId");
+    
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const userRole = (req?.user?.role || "").toLowerCase();
+    if (userRole === "vendor") {
+      const belongsToVendor = order.items?.some(
+        (item) =>
+          item.productId &&
+          item.productId.createdBy &&
+          (item.productId.createdBy._id || item.productId.createdBy).toString() === req.user._id.toString()
+      );
+      if (!belongsToVendor) {
+        return res.status(403).json({ message: "Unauthorized to view this order" });
+      }
+    }
+
     return res.status(200).json({ message: "Order found", order });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error", error });
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
 const UpdateCheckout = async (req, res) => {
   try {
     const { id } = req.params;
     const { orderStatus, paymentStatus } = req.body || {};
-    const checkout = await Checkout.findById(id);
-   
+    const checkout = await Checkout.findById(id).populate("items.productId");
+    if (!checkout) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const userRole = (req?.user?.role || "").toLowerCase();
+    if (userRole === "vendor") {
+      const belongsToVendor = checkout.items?.some(
+        (item) =>
+          item.productId &&
+          item.productId.createdBy &&
+          (item.productId.createdBy._id || item.productId.createdBy).toString() === req.user._id.toString()
+      );
+      if (!belongsToVendor) {
+        return res.status(403).json({ message: "Unauthorized! You can only update orders for your products." });
+      }
+    }
+
     checkout.paymentStatus = paymentStatus ?? checkout.paymentStatus;
     checkout.orderStatus = orderStatus ?? checkout.orderStatus;
     await checkout.save();
@@ -232,23 +304,28 @@ const UpdateCheckout = async (req, res) => {
     return res.status(200).json({ message: "Checkout updated", checkout });
   } catch (error) {
     console.log("update checkout error", error);
-
-    return res.status(500).json({ message: "Internal server error", error });
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };  
 
 const DeleteOrder = async (req, res) => {
   try {
     const { id } = req.params;
+    const userRole = (req?.user?.role || "").toLowerCase();
+
+    if (userRole === "vendor") {
+      return res.status(403).json({ message: "Only Admin or Super Admin can delete orders." });
+    }
+
     const order = await Checkout.findByIdAndDelete(id);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
     return res.status(200).json({ message: "Order deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error", error });
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
-}
+};
 export {
   CreateCheckout,
   GetAllOrders,

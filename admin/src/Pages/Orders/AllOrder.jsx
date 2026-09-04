@@ -8,12 +8,19 @@ import axiosInstance, {
   getData,
   postData,
 } from "../../services/FetchNodeServices";
+import { hasPermission } from "../../services/permissionHelper";
 
 const AllOrder = () => {
   const [orders, setOrders] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [filterOption, setFilterOption] = useState("");
+
+  const storedUser = JSON.parse(sessionStorage.getItem("adminUser") || "{}");
+  const storedRoleDetails = JSON.parse(sessionStorage.getItem("adminRoleDetails") || "null");
+
+  const canDelete = hasPermission(storedUser, storedRoleDetails, "Manage Orders", "delete");
+
 
   // Fetch orders
   const fetchOrders = async () => {
@@ -82,9 +89,22 @@ const AllOrder = () => {
     fetchOrders();
   }, []);
 
-  // Handle filtering by date range or status
+  // Handle filtering by search query, date range or status
   useEffect(() => {
     let filtered = [...orders];
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(
+        (order) =>
+          order?.orderUniqueId?.toLowerCase().includes(q) ||
+          order?.orderStatus?.toLowerCase().includes(q) ||
+          order?.paymentStatus?.toLowerCase().includes(q) ||
+          order?.paymentMode?.toLowerCase().includes(q) ||
+          order?.shippingAddress?.name?.toLowerCase().includes(q) ||
+          order?.shippingAddress?.phone?.includes(q)
+      );
+    }
 
     if (filterOption === "today") {
       const today = new Date();
@@ -111,16 +131,10 @@ const AllOrder = () => {
       filtered = filtered.filter(
         (order) => new Date(order.createdAt) >= startOfMonth
       );
-    } else if (filterOption === "thisYear") {
-      const startOfYear = new Date();
-      startOfYear.setMonth(0, 1);
-      filtered = filtered.filter(
-        (order) => new Date(order.createdAt) >= startOfYear
-      );
     }
 
     setFilteredOrders(filtered);
-  }, [filterOption, orders]);
+  }, [searchQuery, filterOption, orders]);
 
   return (
     <>
@@ -129,7 +143,20 @@ const AllOrder = () => {
         <div className="head">
           <h4>All Orders</h4>
         </div>
+        <div className="links d-flex align-items-center gap-3">
+          <div className="search-box" style={{ width: "260px" }}>
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              placeholder="🔍 Search Order ID, Status, Customer..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ borderRadius: "20px", padding: "6px 14px" }}
+            />
+          </div>
+        </div>
       </div>
+
 
       {/* <div className="filteration">
                 <div className="selects">
@@ -202,14 +229,19 @@ const AllOrder = () => {
                       Order Details{" "}
                       <i className="fa-solid fa-pen-to-square"></i>
                     </Link>
-                    &nbsp;
-                    <button
-                      className="bt delete"
-                      onClick={() => deleteOrder(order?._id)}
-                    >
-                      Delete <i className="fa-solid fa-trash"></i>
-                    </button>
+                    {canDelete && (
+                      <>
+                        &nbsp;
+                        <button
+                          className="bt delete"
+                          onClick={() => deleteOrder(order?._id)}
+                        >
+                          Delete <i className="fa-solid fa-trash"></i>
+                        </button>
+                      </>
+                    )}
                   </td>
+
                 </tr>
               ))
             ) : (

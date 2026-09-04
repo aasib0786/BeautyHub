@@ -21,7 +21,7 @@ import EditFlavour from "../../Pages/Flavour/EditFlavour";
 import AllBanner from "../../Pages/Banner/AllBanner";
 import AddBanner from "../../Pages/Banner/AddBanner";
 import EditBanner from "../../Pages/Banner/EditBanner";
-import EditProduct from "../../Pages/Products/EditProduct ";
+import EditProduct from "../../Pages/Products/EditProduct";
 import Login from "../auth/Login";
 import AllDieses from "../../Pages/Category/AllDieses";
 import AddCategory from "../../Pages/Category/AddCategory";
@@ -57,8 +57,15 @@ import AllSizes from "../../Pages/Size/AllSizes";
 import AddSizes from "../../Pages/Size/AddSizes";
 import EditSizes from "../../Pages/Size/EditSizes";
 import AllProductInquary from "../../Pages/ProductInquary/ProductInquary";
+import SystemSettings from "../../Pages/SystemSettings/SystemSettings";
+import AdminManagement from "../../Pages/AdminManagement/AdminManagement";
+import UserRoleManagement from "../../Pages/UserRoleManagement/UserRoleManagement";
+import AllVendors from "../../Pages/Vendors/AllVendors";
+import VendorRegister from "../../Pages/Vendors/VendorRegister";
 
 const Home = () => {
+
+
   const [login, setLogin] = useState(false);
 
   const verifyAdmin = async () => {
@@ -68,8 +75,15 @@ const Home = () => {
       );
       if (response.status === 200) {
         setLogin(true);
+        if (response?.data?.user) {
+          sessionStorage.setItem("adminUser", JSON.stringify(response.data.user));
+        }
+        if (response?.data?.roleDetails) {
+          sessionStorage.setItem("adminRoleDetails", JSON.stringify(response.data.roleDetails));
+        }
       }
     } catch (error) {
+
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setLogin(false);
       } else {
@@ -141,7 +155,8 @@ const Home = () => {
               <Route path={"/edit-coupon/:id"} element={<EditCoupen />} />
               <Route path={"/add-coupon"} element={<AddCoupen />} />
               {/* all-Reviews */}
-              {/* <Route path={"all-reviews"} element={<AllReviews />} /> */}
+              <Route path={"/all-reviews"} element={<AllReviews />} />
+              <Route path={"all-reviews"} element={<AllReviews />} />
               <Route path={"All-carts"} element={<AllCart />} />
               {/* <Route path={"all-wishlist"} element={<AllWishList />} /> */}
               {/* <Route path={"all-rewardPoint"} element={<AllRewardPoint />} /> */}
@@ -159,11 +174,20 @@ const Home = () => {
               <Route path={"/all-sizes"} element={<AllSizes />} />
               <Route path={"/add-sizes"} element={<AddSizes />} />
               <Route path={"/edit-sizes/:id"} element={<EditSizes />} />
+              <Route path={"/system-settings"} element={<SystemSettings />} />
+              <Route path={"/super-admin-management"} element={<AdminManagement />} />
+              <Route path={"/admin-staff-roles"} element={<UserRoleManagement />} />
+              <Route path={"/all-vendors"} element={<AllVendors />} />
+              <Route path={"/vendor-register"} element={<VendorRegister />} />
             </Routes>
+
+
+
           </div>
         </>
       ) : (
         <Routes>
+          <Route path="/vendor-register" element={<VendorRegister />} />
           <Route path="/*" element={<Login />} />
           <Route
             path="/admin/reset-password/:token"

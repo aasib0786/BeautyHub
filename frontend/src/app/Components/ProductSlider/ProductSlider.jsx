@@ -20,11 +20,11 @@ import "./productSlider.css";
 
 export default function ProductSlider() {
   const sliderRef = useRef(null);
-  const dispatch  = useDispatch();
+  const dispatch = useDispatch();
 
   const { featuredProducts, loading } = useSelector((state) => state.product);
-  const { wishlist }                  = useSelector((state) => state.wishlist);
-  const { user }                      = useSelector((state) => state.auth);
+  const { wishlist } = useSelector((state) => state.wishlist);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchFeaturedProducts());
@@ -81,14 +81,14 @@ export default function ProductSlider() {
     } else {
       dispatch(
         addToCart({
-          productId:  product._id,
-          quantity:   1,
-          image:      product.images?.[0],
+          productId: product._id,
+          quantity: 1,
+          image: product.images?.[0],
           finalPrice: product.finalPrice,
-          name:       product.productName,
-          stock:      product.stock ?? 10,
-          discount:   product.discount,
-          price:      product.price,
+          name: product.productName,
+          stock: product.stock ?? 10,
+          discount: product.discount,
+          price: product.price,
         })
       );
     }
@@ -318,7 +318,7 @@ export default function ProductSlider() {
           display: block;
         }
 
-        .bh-card-img { object-fit: cover; width: 100%; height: 100%; transition: transform 0.5s ease !important; }
+        .bh-card-img { object-fit: contain !important; width: 100%; height: 100%; padding: 6px; transition: transform 0.5s ease !important; }
         .bh-card:hover .bh-card-img { transform: scale(1.08) !important; }
 
         .bh-card-info { padding: 16px; display: flex; flex-direction: column; flex: 1; }

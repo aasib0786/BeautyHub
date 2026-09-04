@@ -7,10 +7,21 @@ import axiosInstance, {
   getData,
   postData,
 } from "../../services/FetchNodeServices";
+import { hasPermission } from "../../services/permissionHelper";
 
 const AllVideos = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const storedUser = JSON.parse(sessionStorage.getItem("adminUser") || "{}");
+  const storedRoleDetails = JSON.parse(sessionStorage.getItem("adminRoleDetails") || "null");
+
+  const canWrite = hasPermission(storedUser, storedRoleDetails, "All Videos", "write");
+  const canUpdate = hasPermission(storedUser, storedRoleDetails, "All Videos", "update");
+  const canDelete = hasPermission(storedUser, storedRoleDetails, "All Videos", "delete");
+
+
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -85,6 +96,13 @@ const AllVideos = () => {
     }
   };
 
+
+
+  const filteredVideos = videos.filter((v) =>
+    v?.videoUrl?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    v?.product?.productName?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (isLoading) {
     return <p>Loading videos...</p>;
   }
@@ -96,10 +114,22 @@ const AllVideos = () => {
         <div className="head">
           <h4>All Videos</h4>
         </div>
-        <div className="links">
-          <Link to="/add-videos" className="add-new">
-            Add New <i className="fa-solid fa-plus"></i>
-          </Link>
+        <div className="links d-flex align-items-center gap-3">
+          <div className="search-box" style={{ width: "240px" }}>
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              placeholder="🔍 Search videos or products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ borderRadius: "20px", padding: "6px 14px" }}
+            />
+          </div>
+          {canWrite && (
+            <Link to="/add-videos" className="add-new">
+              Add New <i className="fa-solid fa-plus"></i>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -110,15 +140,15 @@ const AllVideos = () => {
               <th scope="col">Sr.No.</th>
               <th scope="col">Video URL</th>
               <th scope="col">Video</th>
-              {/* <th scope="col">Status</th> */}
               <th scope="col">Product</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
+              {canUpdate && <th scope="col">Edit</th>}
+              {canDelete && <th scope="col">Delete</th>}
             </tr>
           </thead>
           <tbody>
-            {videos.length > 0 ? (
-              videos.map((video, index) => (
+            {filteredVideos.length > 0 ? (
+              filteredVideos.map((video, index) => (
+
                 <tr key={video._id}>
                   <th scope="row">{index + 1}</th>
                   <td>
@@ -136,39 +166,37 @@ const AllVideos = () => {
                       Your browser does not support the video tag.
                     </video>
                   </td>
-                  {/* <td>
-                                        <input
-                                            type="checkbox"
-                                            checked={video?.status}
-                                            onChange={(e) => handleCheckboxChange(e, video._id)}
-                                        />
-                                    </td> */}
                   <td>
                     <img src={video?.productId?.images?.[0]} alt="" />
                   </td>
-                  <td>
-                    <Link to={`/edit-videos/${video?._id}`} className="bt edit">
-                      Edit <i className="fa-solid fa-pen-to-square"></i>
-                    </Link>
-                  </td>
-                  <td>
-                    <button
-                      className="bt delete"
-                      onClick={() => handleDelete(video?._id)}
-                    >
-                      Delete <i className="fa-solid fa-trash"></i>
-                    </button>
-                  </td>
+                  {canUpdate && (
+                    <td>
+                      <Link to={`/edit-videos/${video?._id}`} className="bt edit">
+                        Edit <i className="fa-solid fa-pen-to-square"></i>
+                      </Link>
+                    </td>
+                  )}
+                  {canDelete && (
+                    <td>
+                      <button
+                        className="bt delete"
+                        onClick={() => handleDelete(video?._id)}
+                      >
+                        Delete <i className="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center">
-                  No videos found
+                <td colSpan="6" className="text-center">
+                  No Videos found
                 </td>
               </tr>
             )}
           </tbody>
+
         </table>
       </section>
     </>

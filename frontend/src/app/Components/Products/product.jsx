@@ -19,7 +19,7 @@ import { axiosInstance } from "@/app/utils/axiosInstance";
 const Product = ({ products }) => {
   const dispatch = useDispatch();
   const { wishlist } = useSelector((state) => state.wishlist);
-  const { user }     = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   const subName = products?.[0]?.subCategory?.subCategoryName || "Featured Collection";
 
@@ -66,14 +66,14 @@ const Product = ({ products }) => {
     } else {
       dispatch(
         addToCart({
-          productId:  product._id,
-          quantity:   1,
-          image:      product.images?.[0],
+          productId: product._id,
+          quantity: 1,
+          image: product.images?.[0],
           finalPrice: product.finalPrice,
-          name:       product.productName,
-          stock:      product.stock ?? 10,
-          discount:   product.discount,
-          price:      product.price,
+          name: product.productName,
+          stock: product.stock ?? 10,
+          discount: product.discount,
+          price: product.price,
         })
       );
     }
@@ -278,7 +278,7 @@ const Product = ({ products }) => {
           display: block;
         }
 
-        .bh-card-img { object-fit: cover; transition: transform 0.5s ease !important; }
+        .bh-card-img { object-fit: contain !important; padding: 6px; transition: transform 0.5s ease !important; }
         .bh-card:hover .bh-card-img { transform: scale(1.08) !important; }
 
         .bh-card-info { padding: 16px; display: flex; flex-direction: column; flex: 1; }

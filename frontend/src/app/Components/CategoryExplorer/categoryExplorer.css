@@ -1,83 +1,120 @@
 /* categoryExplorer.css */
 .category-explorer-section {
-  padding: 70px 0;
-  background: #ffffff;
+  padding: 60px 0;
+  background: linear-gradient(180deg, #ffffff 0%, #fdfbf7 50%, #ffffff 100%);
   position: relative;
 }
 
 .category-header {
   text-align: center;
-  margin-bottom: 45px;
+  margin-bottom: 40px;
 }
 
 .category-subtitle {
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 3px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: #e8607a;
-  margin-bottom: 8px;
-  display: block;
+  color: #153964;
+  background: #f0f5ff;
+  border: 1px solid #d0e1f9;
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  display: inline-block;
 }
 
 .category-title {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.3rem;
   font-weight: 700;
-  color: #111111;
-  margin-bottom: 12px;
+  color: #153964;
+  margin-bottom: 14px;
 }
 
 .category-divider {
   width: 70px;
-  height: 3px;
-  background: linear-gradient(90deg, #e8607a, #c9a84c);
+  height: 3.5px;
+  background: linear-gradient(90deg, #153964, #f3c623);
   margin: 0 auto 30px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
-/* Main Category Tabs */
+/* Main Category Filter Tabs Bar */
+.main-cat-tabs-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding: 6px 0 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.main-cat-tabs-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
 .main-cat-tabs {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
-  gap: 14px;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
+  min-width: 100%;
   flex-wrap: wrap;
-  margin-bottom: 40px;
 }
 
 .main-cat-tab-btn {
-  padding: 12px 26px;
+  padding: 8px 18px;
   border-radius: 30px;
-  background: #f7f5f0;
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  font-size: 0.95rem;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #444;
+  color: #334155;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tab-img-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+}
+
+.tab-icon {
+  font-size: 1rem;
 }
 
 .main-cat-tab-btn:hover {
-  background: #fff0f3;
-  color: #e8607a;
-  border-color: #e8607a;
-  transform: translateY(-2px);
+  background: #f8fafc;
+  color: #153964;
+  border-color: #153964;
+  transform: translateY(-3px);
 }
 
 .main-cat-tab-btn.active {
   background: linear-gradient(135deg, #153964 0%, #1e4d85 100%);
   color: #ffffff;
   border-color: #153964;
-  box-shadow: 0 8px 20px rgba(21, 57, 100, 0.25);
+  box-shadow: 0 8px 20px rgba(21, 57, 100, 0.22);
+}
+
+.main-cat-tab-btn.active span {
+  color: #f3c623;
 }
 
 /* Category Grid Cards */
 .cat-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
 }
 
@@ -85,7 +122,7 @@
   background: #ffffff;
   border: 1px solid #f0e6d6;
   border-radius: 20px;
-  padding: 24px;
+  padding: 16px;
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
@@ -95,6 +132,47 @@
   justify-content: space-between;
 }
 
+.cat-card-img-container {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: #f8f8f8;
+}
+
+.cat-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.cat-explore-card:hover .cat-card-img {
+  transform: scale(1.08);
+}
+
+.cat-card-img-container .cat-explore-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  margin-bottom: 0;
+  background: rgba(21, 57, 100, 0.85);
+  color: #f3c623;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(243, 198, 35, 0.4);
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.cat-card-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 .cat-explore-card::after {
   content: '';
   position: absolute;
@@ -102,76 +180,67 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #c9a84c, #e8607a);
+  background: linear-gradient(90deg, #153964, #f3c623);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
 
 .cat-explore-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 16px 35px rgba(201, 168, 76, 0.18);
-  border-color: #c9a84c;
+  transform: translateY(-6px);
+  box-shadow: 0 16px 35px rgba(21, 57, 100, 0.15);
+  border-color: #153964;
 }
 
 .cat-explore-card:hover::after {
   transform: scaleX(1);
 }
 
-.cat-explore-badge {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #c9a84c;
-  background: #fffdf5;
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  padding: 4px 10px;
-  border-radius: 12px;
-  align-self: flex-start;
-  margin-bottom: 14px;
-}
-
 .cat-explore-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  line-height: 1.3;
 }
 
 .cat-explore-desc {
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   color: #666;
-  line-height: 1.5;
-  margin-bottom: 16px;
+  line-height: 1.45;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .subcat-pills-wrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .subcat-pill {
-  font-size: 0.75rem;
-  background: #f8f8f8;
-  color: #555;
-  padding: 4px 10px;
-  border-radius: 14px;
-  border: 1px solid #eee;
-  font-weight: 500;
+  font-size: 0.72rem;
+  background: #f4f8ff;
+  color: #153964;
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 1px solid #d0e1f9;
+  font-weight: 600;
   transition: all 0.2s ease;
 }
 
 .subcat-pill:hover {
-  background: #e8607a;
-  color: #fff;
-  border-color: #e8607a;
+  background: #153964;
+  color: #ffffff;
+  border-color: #153964;
 }
 
 .cat-explore-action {
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: #153964;
   text-decoration: none;
@@ -183,14 +252,90 @@
 
 .cat-explore-card:hover .cat-explore-action {
   gap: 10px;
-  color: #e8607a;
+  color: #f3c623;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
+  .category-explorer-section {
+    padding: 45px 15px;
+  }
   .category-title {
     font-size: 1.8rem;
   }
   .cat-cards-grid {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
   }
 }
+
+@media (max-width: 768px) {
+  .category-explorer-section {
+    padding: 30px 12px;
+  }
+  .category-header {
+    margin-bottom: 20px;
+  }
+  .category-title {
+    font-size: 1.5rem;
+  }
+  .main-cat-tabs {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .main-cat-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .main-cat-tab-btn {
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .cat-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .cat-explore-card {
+    padding: 12px;
+    border-radius: 16px;
+  }
+  .cat-card-img-container {
+    height: 120px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  .cat-explore-title {
+    font-size: 1rem;
+  }
+  .cat-explore-desc {
+    font-size: 0.78rem;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cat-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .cat-card-img-container {
+    height: 105px;
+  }
+  .cat-explore-card {
+    padding: 10px;
+  }
+  .cat-explore-title {
+    font-size: 0.92rem;
+  }
+  .cat-explore-desc {
+    font-size: 0.74rem;
+    -webkit-line-clamp: 1;
+  }
+}
+
+

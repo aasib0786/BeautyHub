@@ -30,10 +30,13 @@ import {
   fetchCartItems,
   safeJSONParse,
   setCartFromLocalStorage,
+  addToCart,
+  AddToCartToServer,
 } from "@/app/redux/slice/cartSlice";
 import { getWishlistFromServer } from "@/app/redux/slice/wislistSlice";
 import { generateSlug } from "@/app/utils/generate-slug";
 import { useRouter } from "next/navigation";
+
 
 const BRAND_BLUE = "#153964";
 
@@ -133,6 +136,9 @@ const Navbar = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [navTree, setNavTree] = useState([]);
   const [searchValue, setSearchValue] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -151,13 +157,91 @@ const Navbar = () => {
   const handleSearchKeyDown = (e) => {
     if (e.key === "Enter") {
       const query = searchValue.trim();
-      if (query) router.push(`/Pages/products/search?query=${encodeURIComponent(query)}`);
+      if (query) {
+        setShowSearchDropdown(false);
+        router.push(`/Pages/products/search?query=${encodeURIComponent(query)}`);
+      }
     }
   };
 
   const handleSearchChange = () => {
     const query = searchValue.trim();
-    if (query) router.push(`/Pages/products/search?query=${encodeURIComponent(query)}`);
+    if (query) {
+      setShowSearchDropdown(false);
+      router.push(`/Pages/products/search?query=${encodeURIComponent(query)}`);
+    }
+  };
+
+  // Real-time debounced search effect
+  useEffect(() => {
+    const query = searchValue.trim();
+    if (!query) {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const response = await axiosInstance.get(
+          `/api/v1/product/search?query=${encodeURIComponent(query)}`
+        );
+        const products = response?.data?.data || [];
+        setSearchResults(products.slice(0, 6));
+        setShowSearchDropdown(true);
+      } catch (err) {
+        console.error("Failed to search products:", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [searchValue]);
+
+  // Handle Add to Cart directly inside live search dropdown
+  const handleAddToCartInSearch = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const productImg = Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : "/icon1.jpg";
+    const cartPayload = {
+      productId: product._id,
+      quantity: 1,
+      image: productImg,
+      price: product.price,
+      name: product.productName,
+      finalPrice: product.finalPrice,
+      discount: product.discount,
+    };
+
+    dispatch(addToCart(cartPayload));
+
+    if (user?.email) {
+      dispatch(
+        AddToCartToServer([
+          {
+            productId: product._id,
+            quantity: 1,
+            image: productImg,
+            price: product.price,
+            name: product.productName,
+            finalPrice: product.finalPrice,
+            discount: product.discount,
+          },
+        ])
+      );
+    } else {
+      const current = safeJSONParse(localStorage.getItem("cart")) || [];
+      const idx = current.findIndex((item) => (item.productId?._id || item.productId) === product._id);
+      if (idx > -1) {
+        current[idx].quantity += 1;
+      } else {
+        current.push(cartPayload);
+      }
+      localStorage.setItem("cart", JSON.stringify(current));
+    }
+    toast.success(`Added "${product.productName}" to cart!`);
   };
 
   const fetchMainCategories = async () => {
@@ -203,31 +287,6 @@ const Navbar = () => {
     }
   }, [loading]);
 
-  // ─── Shared search bar ────────────────────────────────────────────────────
-  const SearchBar = ({ className = "" }) => (
-    <div className={`nb-search ${className}`}>
-      <div className="input-group">
-        <input
-          suppressHydrationWarning
-          type="text"
-          className="form-control nb-search-input"
-          placeholder="Search for products and keywords…"
-          onKeyDown={handleSearchKeyDown}
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-        <button
-          className="nb-search-btn"
-          onClick={handleSearchChange}
-          type="button"
-          aria-label="Search"
-        >
-          <FaSearch />
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <>
       {/* ══════════════════════════════════════════
@@ -245,6 +304,7 @@ const Navbar = () => {
               </span>
               <div className="d-flex align-items-center gap-3 flex-wrap">
                 <Link href="tel:+919131734930" className="top-nav-link"><FaPhoneAlt style={{ fontSize: "0.8rem" }} /> +91 9131734930</Link>
+                <Link href="/vendor-register" className="top-nav-link" style={{ color: "#f3c623", fontWeight: "bold" }}>🏪 Become a Seller</Link>
                 <Link href="/Pages/franchise" className="top-nav-link">Become a Franchise</Link>
                 <Link href="/Pages/Profile?order=true" className="top-nav-link">Track Order</Link>
                 <Link href="/Pages/helpCenter" className="top-nav-link">Help Center</Link>
@@ -257,7 +317,6 @@ const Navbar = () => {
         <div className="middle-navbar">
           <div className="container-fluid px-3 px-md-4">
 
-            {/* ✅ One correctly-structured flex row */}
             <div className="d-flex align-items-center justify-content-between py-2 gap-3">
 
               {/* Logo */}
@@ -265,8 +324,107 @@ const Navbar = () => {
                 <BrandLogo />
               </div>
 
-              {/* Search — grows to fill space */}
-              <SearchBar className="d-none d-md-flex flex-grow-1" />
+              {/* Search Bar — Desktop */}
+              <div className="nb-search d-none d-md-flex flex-grow-1">
+                <div className="nb-search-container">
+                  <div className="input-group">
+                    <input
+                      suppressHydrationWarning
+                      type="text"
+                      className="form-control nb-search-input"
+                      placeholder="Search for products, categories, or keywords…"
+                      onKeyDown={handleSearchKeyDown}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      onFocus={() => {
+                        if (searchValue.trim() && searchResults.length > 0) setShowSearchDropdown(true);
+                      }}
+                    />
+                    <button
+                      className="nb-search-btn"
+                      onClick={handleSearchChange}
+                      type="button"
+                      aria-label="Search"
+                    >
+                      <FaSearch />
+                    </button>
+                  </div>
+
+                  {/* Live Search Dropdown */}
+                  {showSearchDropdown && searchValue.trim() && (
+                    <div className="nb-search-dropdown shadow-lg">
+                      {isSearching ? (
+                        <div className="p-3 text-center text-muted">
+                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          Searching products...
+                        </div>
+                      ) : searchResults.length > 0 ? (
+                        <>
+                          <div className="px-3 py-1 bg-light border-bottom d-flex justify-content-between align-items-center">
+                            <small className="text-muted fw-bold" style={{ fontSize: "0.75rem" }}>
+                              SUGGESTED PRODUCTS ({searchResults.length})
+                            </small>
+                            <span
+                              style={{ cursor: "pointer", fontSize: "0.75rem" }}
+                              className="text-muted fw-bold"
+                              onClick={() => setShowSearchDropdown(false)}
+                            >
+                              ✕
+                            </span>
+                          </div>
+                          {searchResults.map((prod) => (
+                            <div
+                              key={prod._id}
+                              className="nb-search-item"
+                              onClick={() => {
+                                setShowSearchDropdown(false);
+                                router.push(`/Pages/products/${generateSlug(prod.productName, prod._id)}`);
+                              }}
+                            >
+                              <img
+                                src={Array.isArray(prod.images) && prod.images.length > 0 ? prod.images[0] : "/icon1.jpg"}
+                                alt={prod.productName}
+                                className="nb-search-item-img"
+                                onError={(e) => { e.target.src = "/icon1.jpg"; }}
+                              />
+                              <div className="nb-search-item-info">
+                                <div className="nb-search-item-title">{prod.productName}</div>
+                                <div className="d-flex align-items-center">
+                                  <span className="nb-search-item-price">₹{prod.finalPrice}</span>
+                                  {prod.discount > 0 && (
+                                    <>
+                                      <span className="nb-search-item-mrp">₹{prod.price}</span>
+                                      <span className="nb-search-item-discount">{prod.discount}% OFF</span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                className="nb-search-add-btn"
+                                onClick={(e) => handleAddToCartInSearch(e, prod)}
+                              >
+                                <FaShoppingCart style={{ fontSize: "0.75rem" }} /> Add
+                              </button>
+                            </div>
+                          ))}
+                          <Link
+                            href={`/Pages/products/search?query=${encodeURIComponent(searchValue.trim())}`}
+                            className="nb-search-view-all"
+                            onClick={() => setShowSearchDropdown(false)}
+                          >
+                            View all results for "{searchValue.trim()}" →
+                          </Link>
+                        </>
+                      ) : (
+                        <div className="p-3 text-center text-muted" style={{ fontSize: "0.85rem" }}>
+                          No products found for "{searchValue.trim()}"
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Auth + actions */}
               <div className="d-flex align-items-center gap-2 gap-md-3 flex-shrink-0">
@@ -299,11 +457,93 @@ const Navbar = () => {
 
             {/* Mobile search row */}
             <div className="d-flex d-md-none pb-2">
-              <SearchBar className="w-100" />
+              <div className="nb-search w-100">
+                <div className="nb-search-container">
+                  <div className="input-group">
+                    <input
+                      suppressHydrationWarning
+                      type="text"
+                      className="form-control nb-search-input"
+                      placeholder="Search for products..."
+                      onKeyDown={handleSearchKeyDown}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      onFocus={() => {
+                        if (searchValue.trim() && searchResults.length > 0) setShowSearchDropdown(true);
+                      }}
+                    />
+                    <button
+                      className="nb-search-btn"
+                      onClick={handleSearchChange}
+                      type="button"
+                      aria-label="Search"
+                    >
+                      <FaSearch />
+                    </button>
+                  </div>
+
+                  {/* Live Search Dropdown for Mobile */}
+                  {showSearchDropdown && searchValue.trim() && (
+                    <div className="nb-search-dropdown shadow-lg">
+                      {isSearching ? (
+                        <div className="p-3 text-center text-muted">
+                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          Searching products...
+                        </div>
+                      ) : searchResults.length > 0 ? (
+                        <>
+                          {searchResults.map((prod) => (
+                            <div
+                              key={prod._id}
+                              className="nb-search-item"
+                              onClick={() => {
+                                setShowSearchDropdown(false);
+                                router.push(`/Pages/products/${generateSlug(prod.productName, prod._id)}`);
+                              }}
+                            >
+                              <img
+                                src={Array.isArray(prod.images) && prod.images.length > 0 ? prod.images[0] : "/icon1.jpg"}
+                                alt={prod.productName}
+                                className="nb-search-item-img"
+                                onError={(e) => { e.target.src = "/icon1.jpg"; }}
+                              />
+                              <div className="nb-search-item-info">
+                                <div className="nb-search-item-title">{prod.productName}</div>
+                                <div className="d-flex align-items-center">
+                                  <span className="nb-search-item-price">₹{prod.finalPrice}</span>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                className="nb-search-add-btn"
+                                onClick={(e) => handleAddToCartInSearch(e, prod)}
+                              >
+                                Add
+                              </button>
+                            </div>
+                          ))}
+                          <Link
+                            href={`/Pages/products/search?query=${encodeURIComponent(searchValue.trim())}`}
+                            className="nb-search-view-all"
+                            onClick={() => setShowSearchDropdown(false)}
+                          >
+                            View all results →
+                          </Link>
+                        </>
+                      ) : (
+                        <div className="p-3 text-center text-muted" style={{ fontSize: "0.85rem" }}>
+                          No products found.
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
           </div>
         </div>
+
 
         {/* Bottom nav / mega menu */}
         <nav className="bottom-navbar navbar navbar-expand-lg px-3">
@@ -436,8 +676,89 @@ const Navbar = () => {
 
         {/* Row 2: Search */}
         <div className="px-3 pb-2">
-          <SearchBar className="w-100" />
+          <div className="nb-search w-100">
+            <div className="nb-search-container">
+              <div className="input-group">
+                <input
+                  suppressHydrationWarning
+                  type="text"
+                  className="form-control nb-search-input"
+                  placeholder="Search for products..."
+                  onKeyDown={handleSearchKeyDown}
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onFocus={() => {
+                    if (searchValue.trim() && searchResults.length > 0) setShowSearchDropdown(true);
+                  }}
+                />
+                <button
+                  className="nb-search-btn"
+                  onClick={handleSearchChange}
+                  type="button"
+                  aria-label="Search"
+                >
+                  <FaSearch />
+                </button>
+              </div>
+
+              {showSearchDropdown && searchValue.trim() && (
+                <div className="nb-search-dropdown shadow-lg">
+                  {isSearching ? (
+                    <div className="p-3 text-center text-muted">
+                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Searching products...
+                    </div>
+                  ) : searchResults.length > 0 ? (
+                    <>
+                      {searchResults.map((prod) => (
+                        <div
+                          key={prod._id}
+                          className="nb-search-item"
+                          onClick={() => {
+                            setShowSearchDropdown(false);
+                            router.push(`/Pages/products/${generateSlug(prod.productName, prod._id)}`);
+                          }}
+                        >
+                          <img
+                            src={Array.isArray(prod.images) && prod.images.length > 0 ? prod.images[0] : "/icon1.jpg"}
+                            alt={prod.productName}
+                            className="nb-search-item-img"
+                            onError={(e) => { e.target.src = "/icon1.jpg"; }}
+                          />
+                          <div className="nb-search-item-info">
+                            <div className="nb-search-item-title">{prod.productName}</div>
+                            <div className="d-flex align-items-center">
+                              <span className="nb-search-item-price">₹{prod.finalPrice}</span>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            className="nb-search-add-btn"
+                            onClick={(e) => handleAddToCartInSearch(e, prod)}
+                          >
+                            Add
+                          </button>
+                        </div>
+                      ))}
+                      <Link
+                        href={`/Pages/products/search?query=${encodeURIComponent(searchValue.trim())}`}
+                        className="nb-search-view-all"
+                        onClick={() => setShowSearchDropdown(false)}
+                      >
+                        View all results →
+                      </Link>
+                    </>
+                  ) : (
+                    <div className="p-3 text-center text-muted" style={{ fontSize: "0.85rem" }}>
+                      No products found.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+
 
         {/* Slide-down menu */}
         {isMobileMenuOpen && (

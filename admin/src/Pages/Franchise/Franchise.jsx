@@ -50,11 +50,31 @@ const AllFranchise = () => {
     fetchInquiries();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredInquiries = inquiries.filter((inquiry) =>
+    inquiry?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    inquiry?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    inquiry?.phone?.includes(searchQuery)
+  );
+
   return (
     <>
       <div className="bread">
         <div className="head">
           <h4>Franchise Requests</h4>
+        </div>
+        <div className="links d-flex align-items-center gap-3">
+          <div className="search-box" style={{ width: "260px" }}>
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              placeholder="🔍 Search name, email, phone..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ borderRadius: "20px", padding: "6px 14px" }}
+            />
+          </div>
         </div>
       </div>
 
@@ -75,8 +95,9 @@ const AllFranchise = () => {
               </tr>
             </thead>
             <tbody>
-              {inquiries.length > 0 ? (
-                inquiries.map((inquiry, index) => (
+              {filteredInquiries.length > 0 ? (
+                filteredInquiries.map((inquiry, index) => (
+
                   <tr key={inquiry._id}>
                     <td>{index + 1}</td>
                     <td>{inquiry.fullName}</td>

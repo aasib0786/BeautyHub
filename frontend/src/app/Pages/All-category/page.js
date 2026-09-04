@@ -175,26 +175,29 @@ export default function AllCategory() {
             </div>
           </div>
 
-          {/* Quick Pill Filter Chips */}
-          <div className="bh-filter-chips d-flex flex-wrap gap-2 mt-3 align-items-center">
-            <button
-              className={`bh-pill-btn ${selectedMainCategory === "all" ? "active" : ""}`}
-              onClick={() => setSelectedMainCategory("all")}
-            >
-              ✨ All Items ({categories.length})
-            </button>
-            {navTree.map((mainItem) => (
+          {/* Quick Pill Filter Chips Bar */}
+          <div className="bh-filter-chips-wrapper mt-2">
+            <div className="bh-filter-chips">
               <button
-                key={mainItem._id}
-                className={`bh-pill-btn ${selectedMainCategory === mainItem._id ? "active" : ""}`}
-                onClick={() => setSelectedMainCategory(mainItem._id)}
+                className={`bh-pill-btn ${selectedMainCategory === "all" ? "active" : ""}`}
+                onClick={() => setSelectedMainCategory("all")}
               >
-                {mainItem.mainCategoryName}
+                ✨ All Items ({categories.length})
               </button>
-            ))}
+              {navTree.map((mainItem) => (
+                <button
+                  key={mainItem._id}
+                  className={`bh-pill-btn ${selectedMainCategory === mainItem._id ? "active" : ""}`}
+                  onClick={() => setSelectedMainCategory(mainItem._id)}
+                >
+                  {mainItem.mainCategoryName}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* ── Category Cards Grid ── */}
       <section className="bh-products-grid-section">

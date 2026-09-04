@@ -8,8 +8,13 @@ export const verifyAdmin = (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized you are not logged In" });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    if(decoded.role !== "admin") {
-      return res.status(403).json({ message: "Unauthorized ! Don't try to be smart you are not admin" });
+    req.user = decoded;
+
+    const allowedRoles = ["admin", "superadmin", "super_admin", "vendor", "staff"];
+    const userRole = (decoded.role || "").toLowerCase();
+
+    if (!allowedRoles.includes(userRole)) {
+      return res.status(403).json({ message: "Unauthorized ! You do not have access permissions." });
     }
     next();
   } catch (error) {

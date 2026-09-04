@@ -1,35 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getData, postData, serverURL } from '../../services/FetchNodeServices';
-import { Parser } from 'html-to-react';
+import { getData, postData } from '../../services/FetchNodeServices';
 import { formatDate } from '../../constant';
+import { hasPermission } from '../../services/permissionHelper';
 
 const AllReviews = () => {
     const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Fetch all reviews
-    useEffect(() => {
-        const fetchReviews = async () => {
-            setIsLoading(true);
-            try {
-                const response = await getData("api/products/get-all-reviews");
-                if (response.success === true) {
-                    setReviews(response?.reviews || []);
-                }
-            } catch (error) {
-                console.error("Error fetching reviews:", error);
-                toast.error("Failed to fetch reviews!");
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    const storedUser = JSON.parse(sessionStorage.getItem("adminUser") || "{}");
+    const storedRoleDetails = JSON.parse(sessionStorage.getItem("adminRoleDetails") || "null");
 
+    const canUpdate = hasPermission(storedUser, storedRoleDetails, "Manage Reviews", "update");
+    const canDelete = hasPermission(storedUser, storedRoleDetails, "Manage Reviews", "delete");
+
+
+    // Fetch all reviews
+    const fetchReviews = async () => {
+        setIsLoading(true);
+        try {
+            const response = await getData("api/v1/review/all");
+            if (response.success === true) {
+                setReviews(response?.reviews || []);
+            } else {
+                const fallbackRes = await getData("api/products/get-all-reviews");
+                if (fallbackRes.success === true) {
+                    setReviews(fallbackRes?.reviews || []);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+            toast.error("Failed to fetch reviews!");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchReviews();
     }, []);
 
@@ -68,12 +78,12 @@ const AllReviews = () => {
             if (response.success === true) {
                 const updatedReviews = reviews.map(review => {
                     if (review._id === reviewId) {
-                        return { ...review, status: updatedStatus }; // Correctly update the review object
+                        return { ...review, status: updatedStatus };
                     }
                     return review;
                 });
 
-                setReviews(updatedReviews); // Set the updated reviews state
+                setReviews(updatedReviews);
                 toast.success('Review status updated successfully');
             }
         } catch (error) {
@@ -84,7 +94,9 @@ const AllReviews = () => {
 
     // Filter reviews based on search query
     const filteredReviews = reviews?.filter((review) =>
-        review?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+        review?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+        review?.product?.productName?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+        review?.reviewText?.toLowerCase()?.includes(searchQuery?.toLowerCase())
     );
 
     return (
@@ -92,48 +104,48 @@ const AllReviews = () => {
             <ToastContainer />
             <div className="bread">
                 <div className="head">
-                    <h4>All Reviews List</h4>
+                    <h4>All Customer Reviews & Ratings</h4>
+                </div>
+                <div className="links d-flex align-items-center gap-3">
+                    <div className="search-box" style={{ width: "260px" }}>
+                        <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder="🔍 Search customer, product, review..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ borderRadius: "20px", padding: "6px 14px" }}
+                        />
+                    </div>
                 </div>
             </div>
 
-            {/* <div className="filteration">
-                <div className="search">
-                    <label htmlFor="search">Search</label> &nbsp;
-                    <input
-                        type="text"
-                        name="search"
-                        id="search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-            </div> */}
 
             <section className="main-table">
                 <table className="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
                             <th>S No.</th>
-                            <th>Name</th>
+                            <th>Product</th>
+                            <th>Customer Name</th>
                             <th>Email</th>
-                            <th>Profile Image</th>
-                            <th>Description</th>
-                            <th>Show on HomePage</th>
                             <th>Rating</th>
+                            <th>Review Comment</th>
+                            <th>Visible (Approved)</th>
                             <th>Date</th>
-                            <th>Actions</th>
+                            {canDelete && <th>Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {isLoading ? (
                             <tr>
-                                <td colSpan="8" className="text-center">
-                                    Loading...
+                                <td colSpan="9" className="text-center">
+                                    Loading reviews...
                                 </td>
                             </tr>
                         ) : filteredReviews.length === 0 ? (
                             <tr>
-                                <td colSpan="8" className="text-center">
+                                <td colSpan="9" className="text-center">
                                     No Reviews found.
                                 </td>
                             </tr>
@@ -141,37 +153,42 @@ const AllReviews = () => {
                             filteredReviews?.map((review, index) => (
                                 <tr key={review._id}>
                                     <td>{index + 1}</td>
-                                    <td>{review?.name}</td>
-                                    <td>{review?.email}</td>
                                     <td>
-                                        <img
-                                            src={review?.profileImage ? `${review.profileImage}` : 'default-profile.jpg'}
-                                            alt="Review"
-                                            style={{ width: "50px", height: "50px", objectFit: "cover", marginRight: "5px" }}
-                                        />
+                                        <strong>{review?.product?.productName || 'BeautyHub Item'}</strong>
                                     </td>
-                                    <td>{review?.reviewText}</td>
+                                    <td>{review?.name}</td>
+                                    <td>{review?.email || 'N/A'}</td>
                                     <td>
+                                        <span style={{ color: '#E5C07B', fontWeight: 'bold' }}>
+                                            {'★'.repeat(Math.round(review?.rating || 5))}
+                                        </span> ({review?.rating} Stars)
+                                    </td>
+                                    <td style={{ maxWidth: "300px" }}>{review?.reviewText}</td>
+                                    <td style={{ textAlign: "center" }}>
                                         <input
                                             type="checkbox"
+                                            disabled={!canUpdate}
                                             checked={review?.status}
-                                            onChange={(e) => handleCheckboxChange(e, review?._id)}
+                                            onChange={(e) => canUpdate && handleCheckboxChange(e, review?._id)}
+                                            style={{ cursor: canUpdate ? "pointer" : "not-allowed" }}
                                         />
                                     </td>
-                                    <td>{review?.rating} Star(s)</td>
                                     <td>{formatDate(review?.createdAt)}</td>
-                                    <td>
-                                        <button
-                                            onClick={() => handleDelete(review._id)}
-                                            className="bt delete"
-                                        >
-                                            Delete <i className="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
+                                    {canDelete && (
+                                        <td>
+                                            <button
+                                                onClick={() => handleDelete(review._id)}
+                                                className="bt delete"
+                                            >
+                                                Delete <i className="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    )}
                                 </tr>
                             ))
                         )}
                     </tbody>
+
                 </table>
             </section>
         </>

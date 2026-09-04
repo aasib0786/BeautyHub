@@ -10,21 +10,34 @@ const productInquarySchema = new mongoose.Schema(
         productId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Product",
-            required: true,
+            default: null,
         },
         name: {
             type: String,
             required: true,
             trim: true,
         },
-        size: {
+        email: {
             type: String,
-            required: true,
+            trim: true,
+            default: "",
         },
         phone: {
             type: String,
             required: true,
             trim: true,
+        },
+        size: {
+            type: String,
+            default: "N/A",
+        },
+        needDescription: {
+            type: String,
+            default: "",
+        },
+        chatHistory: {
+            type: Array,
+            default: [],
         },
     },
     { timestamps: true }

@@ -4,12 +4,22 @@ import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../../services/FetchNodeServices";
+import { hasPermission } from "../../services/permissionHelper";
 
 const AllMainCategory = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const storedUser = JSON.parse(sessionStorage.getItem("adminUser") || "{}");
+  const storedRoleDetails = JSON.parse(sessionStorage.getItem("adminRoleDetails") || "null");
+
+  const canWrite = hasPermission(storedUser, storedRoleDetails, "All Main Category", "write");
+  const canUpdate = hasPermission(storedUser, storedRoleDetails, "All Main Category", "update");
+  const canDelete = hasPermission(storedUser, storedRoleDetails, "All Main Category", "delete");
 
   // Fetch Main Categories on mount
+
   useEffect(() => {
     const fetchMainCategories = async () => {
       try {
@@ -97,6 +107,12 @@ const AllMainCategory = () => {
     }
   };
 
+
+
+  const filteredCategories = mainCategories.filter((cat) =>
+    cat?.mainCategoryName?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (isLoading) {
     return <p className="p-4">Loading main categories...</p>;
   }
@@ -108,10 +124,22 @@ const AllMainCategory = () => {
         <div className="head">
           <h4>All Main Category</h4>
         </div>
-        <div className="links">
-          <Link to="/add-main-category" className="add-new">
-            Add New <i className="fa-solid fa-plus"></i>
-          </Link>
+        <div className="links d-flex align-items-center gap-3">
+          <div className="search-box" style={{ width: "240px" }}>
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              placeholder="🔍 Search main categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ borderRadius: "20px", padding: "6px 14px" }}
+            />
+          </div>
+          {canWrite && (
+            <Link to="/add-main-category" className="add-new">
+              Add New <i className="fa-solid fa-plus"></i>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -122,14 +150,15 @@ const AllMainCategory = () => {
               <th scope="col">Sr.No.</th>
               <th scope="col">Name</th>
               <th scope="col">Image</th>
-              <th scope="col">Show in Collection</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
+              <th scope="col">Show in Header (Navbar)</th>
+              {canUpdate && <th scope="col">Edit</th>}
+              {canDelete && <th scope="col">Delete</th>}
             </tr>
           </thead>
           <tbody>
-            {mainCategories?.length > 0 ? (
-              mainCategories.map((item, index) => (
+            {filteredCategories?.length > 0 ? (
+              filteredCategories.map((item, index) => (
+
                 <tr key={item._id}>
                   <th scope="row">{index + 1}</th>
                   <td>{item?.mainCategoryName}</td>
@@ -144,26 +173,32 @@ const AllMainCategory = () => {
                   <td>
                     <input
                       type="checkbox"
+                      disabled={!canUpdate}
                       checked={item?.isCollection || false}
-                      onChange={(e) => handleCheckboxChange(e, item._id)}
+                      onChange={(e) => canUpdate && handleCheckboxChange(e, item._id)}
+                      style={{ cursor: canUpdate ? "pointer" : "not-allowed" }}
                     />
                   </td>
-                  <td>
-                    <Link
-                      to={`/edit-main-category/${item?._id}`}
-                      className="bt edit"
-                    >
-                      Edit <i className="fa-solid fa-pen-to-square"></i>
-                    </Link>
-                  </td>
-                  <td>
-                    <button
-                      className="bt delete"
-                      onClick={() => handleDelete(item._id)}
-                    >
-                      Delete <i className="fa-solid fa-trash"></i>
-                    </button>
-                  </td>
+                  {canUpdate && (
+                    <td>
+                      <Link
+                        to={`/edit-main-category/${item?._id}`}
+                        className="bt edit"
+                      >
+                        Edit <i className="fa-solid fa-pen-to-square"></i>
+                      </Link>
+                    </td>
+                  )}
+                  {canDelete && (
+                    <td>
+                      <button
+                        className="bt delete"
+                        onClick={() => handleDelete(item._id)}
+                      >
+                        Delete <i className="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (
@@ -174,6 +209,7 @@ const AllMainCategory = () => {
               </tr>
             )}
           </tbody>
+
         </table>
       </section>
     </>

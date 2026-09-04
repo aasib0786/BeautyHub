@@ -4,10 +4,20 @@ import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../../services/FetchNodeServices";
+import { hasPermission } from "../../services/permissionHelper";
 
 const AllSubCategory = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const storedUser = JSON.parse(sessionStorage.getItem("adminUser") || "{}");
+  const storedRoleDetails = JSON.parse(sessionStorage.getItem("adminRoleDetails") || "null");
+
+  const canWrite = hasPermission(storedUser, storedRoleDetails, "All SubCategory", "write");
+  const canUpdate = hasPermission(storedUser, storedRoleDetails, "All SubCategory", "update");
+  const canDelete = hasPermission(storedUser, storedRoleDetails, "All SubCategory", "delete");
+
 
   // Fetch Sub Categories on mount
   useEffect(() => {
@@ -91,6 +101,13 @@ const AllSubCategory = () => {
     }
   };
 
+
+  const filteredSubCategories = subCategories?.filter((sub) =>
+    sub?.subCategoryName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    sub?.Category?.categoryName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    sub?.mainCategory?.mainCategoryName?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (isLoading) {
     return <p className="p-4">Loading subcategories...</p>;
   }
@@ -102,10 +119,22 @@ const AllSubCategory = () => {
         <div className="head">
           <h4>All Sub Category</h4>
         </div>
-        <div className="links">
-          <Link to="/add-subCategory" className="add-new">
-            Add New <i className="fa-solid fa-plus"></i>
-          </Link>
+        <div className="links d-flex align-items-center gap-3">
+          <div className="search-box" style={{ width: "240px" }}>
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              placeholder="🔍 Search sub categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ borderRadius: "20px", padding: "6px 14px" }}
+            />
+          </div>
+          {canWrite && (
+            <Link to="/add-subCategory" className="add-new">
+              Add New <i className="fa-solid fa-plus"></i>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -119,13 +148,14 @@ const AllSubCategory = () => {
               <th scope="col">Sub Category</th>
               <th scope="col">Image</th>
               <th scope="col">Show in Collection</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
+              {canUpdate && <th scope="col">Edit</th>}
+              {canDelete && <th scope="col">Delete</th>}
             </tr>
           </thead>
           <tbody>
-            {subCategories?.length > 0 ? (
-              subCategories.map((sub, index) => (
+            {filteredSubCategories?.length > 0 ? (
+              filteredSubCategories.map((sub, index) => (
+
                 <tr key={sub._id}>
                   <th scope="row">{index + 1}</th>
                   <td>
@@ -150,26 +180,32 @@ const AllSubCategory = () => {
                   <td>
                     <input
                       type="checkbox"
+                      disabled={!canUpdate}
                       checked={sub?.isCollection || false}
-                      onChange={(e) => handleCheckboxChange(e, sub._id)}
+                      onChange={(e) => canUpdate && handleCheckboxChange(e, sub._id)}
+                      style={{ cursor: canUpdate ? "pointer" : "not-allowed" }}
                     />
                   </td>
-                  <td>
-                    <Link
-                      to={`/edit-subCategory/${sub?._id}`}
-                      className="bt edit"
-                    >
-                      Edit <i className="fa-solid fa-pen-to-square"></i>
-                    </Link>
-                  </td>
-                  <td>
-                    <button
-                      className="bt delete"
-                      onClick={() => handleDelete(sub._id)}
-                    >
-                      Delete <i className="fa-solid fa-trash"></i>
-                    </button>
-                  </td>
+                  {canUpdate && (
+                    <td>
+                      <Link
+                        to={`/edit-subCategory/${sub?._id}`}
+                        className="bt edit"
+                      >
+                        Edit <i className="fa-solid fa-pen-to-square"></i>
+                      </Link>
+                    </td>
+                  )}
+                  {canDelete && (
+                    <td>
+                      <button
+                        className="bt delete"
+                        onClick={() => handleDelete(sub._id)}
+                      >
+                        Delete <i className="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (
@@ -180,6 +216,7 @@ const AllSubCategory = () => {
               </tr>
             )}
           </tbody>
+
         </table>
       </section>
     </>

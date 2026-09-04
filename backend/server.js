@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./db/index.js";
 
 const app = express();
+app.set("etag", false);
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
@@ -45,6 +46,10 @@ import orderRouter from "./routes/order.route.js";
 import emailInqueryRouter from "./routes/emailInquery.route.js";
 import sizeRouter from "./routes/size.route.js";
 import productInquaryRouter from "./routes/productInquary.route.js";
+import reviewRouter from "./routes/review.route.js";
+import systemSettingsRouter from "./routes/systemSettings.route.js";
+import adminManagementRouter from "./routes/adminManagement.route.js";
+import roleRouter from "./routes/role.route.js";
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/category", categoryRouter);
@@ -63,6 +68,17 @@ app.use("/api/v1/order", orderRouter);
 app.use("/api/email-inquery", emailInqueryRouter);
 app.use("/api/v1/size", sizeRouter);
 app.use("/api/v1/product-inquery", productInquaryRouter);
+app.use("/api/v1/review", reviewRouter);
+app.use("/api/products", reviewRouter);
+app.use("/api/v1/settings", systemSettingsRouter);
+app.use("/api/v1/admin-management", adminManagementRouter);
+app.use("/api/v1/role", roleRouter);
+app.use("/api/role", roleRouter);
+app.use("/api/v1/roles", roleRouter);
+
+
+
+
 
 app.get("/", (req, res) => {
   res.send("Server is running");

@@ -32,17 +32,67 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "user"],
       default: "user",
+    },
+
+    isVerified: {
+      type: Boolean,
+      default: true,
+    },
+    parentAdmin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    permissions: {
+      manageProducts: { type: Boolean, default: true },
+      manageOrders: { type: Boolean, default: true },
+      manageCategories: { type: Boolean, default: true },
+      manageBrands: { type: Boolean, default: true },
+      manageBanners: { type: Boolean, default: true },
+      manageVideos: { type: Boolean, default: true },
+      manageCoupons: { type: Boolean, default: true },
+      manageReviews: { type: Boolean, default: true },
+      systemSettings: { type: Boolean, default: true },
     },
     city: {
       type: String,
     },
+
     pincode: {
       type: String,
     },
     address: {
       type: String,
+    },
+    businessName: {
+      type: String,
+      default: "",
+    },
+    gstNumber: {
+      type: String,
+      default: "",
+    },
+    panNumber: {
+      type: String,
+      default: "",
+    },
+    aadharNumber: {
+      type: String,
+      default: "",
+    },
+    panCardDoc: {
+      type: String,
+      default: "",
+    },
+    aadharCardDoc: {
+      type: String,
+      default: "",
     },
     signUpOtp: String,
     signUpOtpExpires: Date,

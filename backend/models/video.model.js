@@ -10,7 +10,13 @@ const videoSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Product",
         },
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+        },
     },
+
     { timestamps: true }
 );
 

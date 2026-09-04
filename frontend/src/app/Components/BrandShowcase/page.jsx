@@ -76,34 +76,46 @@ export default function BrandShowcase() {
         </div>
 
         <div className="brand-grid">
-          {brands.map((brand, idx) => (
-            <Link
-              key={brand._id || idx}
-              href={`/all-products?brand=${brand._id || ""}`}
-              className="brand-card"
-            >
-              <div className="brand-icon-wrapper">
-                {brand.brandLogo ? (
-                  <img
-                    src={brand.brandLogo}
-                    alt={brand.brandName}
-                    style={{ width: "40px", height: "40px", objectFit: "contain" }}
-                  />
-                ) : (
-                  <span>{brand.brandName.charAt(0).toUpperCase() || "👑"}</span>
-                )}
-              </div>
-              <h3 className="brand-name">{brand.brandName}</h3>
-              <p className="brand-category-tag">
-                {brand.tag || brand.description?.slice(0, 25) || "Luxury Brand"}
-              </p>
-              <span className="brand-products-count">
-                {brand.count || "Explore Collection"}
-              </span>
-            </Link>
-          ))}
+          {brands.map((brand, idx) => {
+            const cleanDesc = brand.description
+              ? brand.description.length > 35
+                ? brand.description.substring(0, 35) + "..."
+                : brand.description
+              : "Official Brand Collection";
+
+            return (
+              <Link
+                key={brand._id || idx}
+                href={`/Pages/products/search?query=${encodeURIComponent(brand.brandName || "")}`}
+                className="brand-card"
+              >
+                <div className="brand-icon-wrapper">
+                  {brand.brandLogo ? (
+                    <img
+                      src={brand.brandLogo}
+                      alt={brand.brandName}
+                      className="brand-logo-img"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <span className="brand-fallback-letter">
+                      {brand?.brandName?.charAt(0)?.toUpperCase() || "👑"}
+                    </span>
+                  )}
+                </div>
+                <h3 className="brand-name">{brand.brandName}</h3>
+                <p className="brand-category-tag">{cleanDesc}</p>
+                <span className="brand-products-count">
+                  Explore Collection ➔
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
+

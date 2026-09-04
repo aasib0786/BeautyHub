@@ -5,10 +5,20 @@ import Swal from 'sweetalert2';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance, { getData, postData, serverURL } from '../../services/FetchNodeServices';
+import { hasPermission } from '../../services/permissionHelper';
 
 const AllSBanner = () => {
     const [banners, setBanners] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const storedUser = JSON.parse(sessionStorage.getItem("adminUser") || "{}");
+    const storedRoleDetails = JSON.parse(sessionStorage.getItem("adminRoleDetails") || "null");
+
+    const canWrite = hasPermission(storedUser, storedRoleDetails, "Banners", "write");
+    const canUpdate = hasPermission(storedUser, storedRoleDetails, "Banners", "update");
+    const canDelete = hasPermission(storedUser, storedRoleDetails, "Banners", "delete");
+
 
     const fetchBanners = async () => {
         try {
@@ -86,6 +96,11 @@ const AllSBanner = () => {
 
 
 
+    const filteredBanners = banners?.filter((banner) =>
+        banner?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        banner?.subCategory?.subCategoryName?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <>
             <ToastContainer />
@@ -93,10 +108,22 @@ const AllSBanner = () => {
                 <div className="head">
                     <h4>All Banners</h4>
                 </div>
-                <div className="links">
-                    <Link to="/add-banner" className="add-new">
-                        Add New <i className="fa-solid fa-plus"></i>
-                    </Link>
+                <div className="links d-flex align-items-center gap-3">
+                    <div className="search-box" style={{ width: "240px" }}>
+                        <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder="🔍 Search banners..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ borderRadius: "20px", padding: "6px 14px" }}
+                        />
+                    </div>
+                    {canWrite && (
+                        <Link to="/add-banner" className="add-new">
+                            Add New <i className="fa-solid fa-plus"></i>
+                        </Link>
+                    )}
                 </div>
             </div>
 
@@ -106,13 +133,12 @@ const AllSBanner = () => {
                     <thead>
                         <tr>
                             <th scope="col">Sr.No.</th>
-                            {/* <th scope="col">Name</th> */}
                             <th scope="col">Image</th>
                             <th>Title</th>
                             <th>Collection</th>
                             <th scope="col">Show in home page</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
+                            {canUpdate && <th scope="col">Edit</th>}
+                            {canDelete && <th scope="col">Delete</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -120,8 +146,9 @@ const AllSBanner = () => {
                             <tr>
                                 <td colSpan="7" className="text-center">Loading...</td>
                             </tr>
-                        ) : banners?.length > 0 ? (
-                            banners?.map((banner, index) => (
+                        ) : filteredBanners?.length > 0 ? (
+                            filteredBanners?.map((banner, index) => (
+
                                 <tr key={banner?._id}>
                                     <th scope="row">{index + 1}</th>
                                     {/* <td>{banner?.name}</td> */}
@@ -137,23 +164,29 @@ const AllSBanner = () => {
                                     <td>
                                         <input
                                             type="checkbox"
+                                            disabled={!canUpdate}
                                             checked={banner?.isActive}
-                                            onChange={(e) => handleCheckboxChange(e, banner?._id)}
+                                            onChange={(e) => canUpdate && handleCheckboxChange(e, banner?._id)}
+                                            style={{ cursor: canUpdate ? "pointer" : "not-allowed" }}
                                         />
                                     </td>
-                                    <td>
-                                        <Link to={`/edit-banner/${banner?._id}`} className="bt edit">
-                                            Edit <i className="fa-solid fa-pen-to-square"></i>
-                                        </Link>
-                                    </td>
-                                    <td>
-                                        <button
-                                            onClick={() => handleDelete(banner?._id)}
-                                            className="bt delete"
-                                        >
-                                            Delete <i className="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
+                                    {canUpdate && (
+                                        <td>
+                                            <Link to={`/edit-banner/${banner?._id}`} className="bt edit">
+                                                Edit <i className="fa-solid fa-pen-to-square"></i>
+                                            </Link>
+                                        </td>
+                                    )}
+                                    {canDelete && (
+                                        <td>
+                                            <button
+                                                onClick={() => handleDelete(banner?._id)}
+                                                className="bt delete"
+                                            >
+                                                Delete <i className="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    )}
                                 </tr>
                             ))
                         ) : (
@@ -162,6 +195,7 @@ const AllSBanner = () => {
                             </tr>
                         )}
                     </tbody>
+
                 </table>
             </section>
         </>

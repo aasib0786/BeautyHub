@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from '@/app/Components/Navbar/page';
 import Footer from '@/app/Components/Footer/page';
+import FloatingWhatsApp from '@/app/Components/FloatingWhatsApp/page';
 import Script from 'next/script'; // Import Next.js Script component
 import ReduxProvider from "./redux/provider";
 import { Toaster } from "react-hot-toast";
@@ -51,7 +52,9 @@ export default function RootLayout({ children }) {
           {children}
         </div>
         <Footer />
+        <FloatingWhatsApp />
         </ReduxProvider>
+
 
         {/* Proper way to load scripts in Next.js */}
         <Script

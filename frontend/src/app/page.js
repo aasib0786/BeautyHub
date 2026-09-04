@@ -3,8 +3,8 @@ import TopTrending from "./Components/TopTrending/page";
 import Collection from "@/app/Components/Collections/page";
 import Carousel from "./Components/Carousel/page";
 import ReelSection from "./Components/ReelSection/reelSection";
-import FloatingWhatsApp from "./Components/FloatingWhatsApp/page";
 import "slick-carousel/slick/slick.css";
+
 import "slick-carousel/slick/slick-theme.css";
 import FAQ from "./Components/Faq/FAQ";
 import TestimonialSlider from "./Components/Testimonial/page";
@@ -27,16 +27,14 @@ export default function Home() {
       <CategoryExplorer />
 
       {/* 4. Top Trending Beauty, Teddy Bears & Gift Products */}
-      <TopTrending />
+      {/* <TopTrending /> */}
 
       {/* 5. Featured Brands Showcase (L'Oréal Paris, Huggy Teddies, etc.) */}
       <BrandShowcase />
 
-      {/* 6. Floating Customer Support WhatsApp */}
-      <FloatingWhatsApp />
-
       {/* 7. Reels / Video Highlights */}
       <ReelSection />
+
 
       {/* 8. Products Slider Carousel */}
       <ProductSlider />

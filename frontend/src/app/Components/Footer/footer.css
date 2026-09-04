@@ -1,13 +1,13 @@
-/* ── Base ─────────────────────────────────────────────────────────────────── */
+/* footer.css */
 .footer {
-  background: linear-gradient(135deg, #fff8f0 0%, #fdf3f8 50%, #f8f0ff 100%);
-  padding: 48px 20px 0;
+  background: linear-gradient(180deg, #0d2543 0%, #153964 100%);
+  padding: 50px 0 0;
   font-size: 0.875rem;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'DM Sans', Arial, sans-serif;
   width: 100%;
   overflow: hidden;
-  border-top: 3px solid #c9a84c;
-  color: #444;
+  border-top: 3px solid #f3c623;
+  color: #cbd5e1;
 }
 
 .Footersection {
@@ -15,55 +15,101 @@
   margin: 0 auto;
 }
 
-/* ── Divider ─────────────────────────────────────────────────────────────── */
-.footerDivider {
-  border: none;
-  border-top: 1px solid #e8d5b0;
-  margin: 8px 0 28px;
-}
-
-/* ── Top section: logo + text + newsletter ───────────────────────────────── */
+/* ── Top Section & Brand ── */
 .footerTop {
-  margin-bottom: 8px;
-}
-
-.logoSection {
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .logoText {
-  flex: 1 1 220px;
-  padding-top: 6px;
-  line-height: 1.7;
-  color: #666;
-  font-weight: normal;
-  max-width: 360px;
-  margin: 0;
+  line-height: 1.65;
+  color: #cbd5e1;
+  font-size: 0.88rem;
+  max-width: 480px;
+  margin-top: 10px;
+  margin-bottom: 0;
 }
 
-.newsletterWrap {
-  flex: 1 1 240px;
-  padding-top: 4px;
+/* ── Newsletter Glassmorphism Box ── */
+.newsletterBox {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(243, 198, 35, 0.25);
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.newsletterTitle {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .newsletterLabel {
-  font-size: 0.78rem;
-  color: #8a6e2f;
-  font-weight: 600;
-  margin-bottom: 8px;
-  letter-spacing: 0.03em;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 12px;
 }
 
-/* ── Headings ────────────────────────────────────────────────────────────── */
-.heading {
-  font-size: 0.9rem;
+.contactForm {
+  display: flex;
+  gap: 8px;
+}
+
+.contactInput {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #334155;
+  border-radius: 25px;
+  font-size: 0.85rem;
+  outline: none;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  transition: all 0.25s ease;
+}
+
+.contactInput:focus {
+  border-color: #f3c623;
+  box-shadow: 0 0 0 3px rgba(243, 198, 35, 0.2);
+}
+
+.contactButton {
+  padding: 0 20px;
+  background: linear-gradient(135deg, #f3c623 0%, #d4a017 100%);
+  color: #153964;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.85rem;
   font-weight: 700;
-  margin-bottom: 14px;
-  color: #8a3b6b;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(243, 198, 35, 0.25);
+}
+
+.contactButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(243, 198, 35, 0.35);
+}
+
+/* ── Divider ── */
+.footerDivider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 24px 0;
+}
+
+/* ── Headings ── */
+.heading {
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #f3c623;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   position: relative;
@@ -75,255 +121,147 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 28px;
+  width: 32px;
   height: 2px;
-  background: #c9a84c;
+  background: #f3c623;
   border-radius: 2px;
 }
 
-/* ── Lists ───────────────────────────────────────────────────────────────── */
-.list,
-.innerListGrid {
+/* ── Lists ── */
+.list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.list li,
-.innerListGrid > li {
-  margin-bottom: 9px;
+.list li {
+  margin-bottom: 10px;
 }
 
-.list li:last-child,
-.innerListGrid > li:last-child {
-  margin-bottom: 0;
-}
-
-.list li a,
-.innerListGrid > li a {
+.list li a {
   text-decoration: none;
-  color: #555;
-  font-weight: normal;
+  color: #cbd5e1;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   transition: all 0.25s ease;
-  font-size: 0.84rem;
+  font-size: 0.85rem;
 }
 
 .list li a::before {
   content: "›";
-  color: #c9a84c;
+  color: #f3c623;
   font-size: 1rem;
   line-height: 1;
   transition: transform 0.2s;
 }
 
-.list li a:hover,
-.innerListGrid > li a:hover {
-  color: #8a3b6b;
+.list li a:hover {
+  color: #f3c623;
   transform: translateX(4px);
 }
 
-/* ── Bottom section ──────────────────────────────────────────────────────── */
-.footerBottomSec {
-  margin-top: 8px;
-  padding: 16px 0;
-}
-
+/* ── Footer Bottom Section ── */
 .footerBottomSec h4 {
   margin-bottom: 10px;
   font-weight: 700;
-  font-size: 0.82rem;
-  color: #555;
+  font-size: 0.8rem;
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-}
-
-.bottomFlexWrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-/* ── Payment ─────────────────────────────────────────────────────────────── */
-.paymentsec {
-  display: flex;
-  flex-direction: column;
 }
 
 .paymentIcons {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .payIcon {
-  font-size: 2rem;
+  font-size: 2.1rem;
+  transition: transform 0.2s ease;
 }
 
-/* ── Social ──────────────────────────────────────────────────────────────── */
-.SocialLinks {
-  display: flex;
-  flex-direction: column;
+.payIcon:hover {
+  transform: translateY(-2px);
 }
 
 .socialMediaSec {
-  display: flex;
-  gap: 12px;
+  display: inline-flex;
+  gap: 10px;
   align-items: center;
 }
 
-.socialIcon {
-  font-size: 1.8rem;
-  transition: transform 0.2s, opacity 0.2s;
-}
-
-.socialIcon:hover {
-  transform: scale(1.15);
-  opacity: 0.85;
-}
-
-.instagramicon { color: #c13584; }
-.facebookicon  { color: #1877f2; }
-.twittericon   { color: #1da1f2; }
-
-/* ── Copyright ───────────────────────────────────────────────────────────── */
-.footerCopyright {
-  background: linear-gradient(90deg, #8a3b6b, #c9a84c);
-  text-align: center;
-  padding: 14px 20px;
-  margin-top: 20px;
-  color: #fff;
-  font-size: 0.78rem;
-  letter-spacing: 0.03em;
-}
-
-.footerCopyright strong {
-  color: #ffe8c0;
-}
-
-/* ── Newsletter form ─────────────────────────────────────────────────────── */
-.contactForm {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: nowrap;
-  flex-direction: row;
-}
-
-.contactInput {
-  flex: 1 1 auto;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #e8d5b0;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  height: 38px;
-  min-width: 0;
-  outline: none;
-  transition: border-color 0.2s;
-  background: #fff;
-}
-
-.contactInput:focus {
-  border-color: #c9a84c;
-}
-
-.contactButton {
-  padding: 0 1rem;
-  background: linear-gradient(135deg, #8a3b6b, #c9a84c);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.875rem;
-  height: 38px;
+.socialBadge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  white-space: nowrap;
-  font-weight: 600;
-  transition: opacity 0.2s;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  text-decoration: none;
 }
 
-.contactButton:hover {
-  opacity: 0.88;
+.socialBadge:hover {
+  background: #f3c623;
+  color: #153964;
+  transform: translateY(-3px) scale(1.08);
+  border-color: #f3c623;
 }
 
-/* ── Responsive: tablet ──────────────────────────────────────────────────── */
+/* ── Copyright ── */
+.footerCopyright {
+  background: #091a30;
+  text-align: center;
+  padding: 16px 0;
+  margin-top: 28px;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footerCopyright strong {
+  color: #f3c623;
+}
+
+/* ── Mobile Responsiveness ── */
 @media (max-width: 768px) {
   .footer {
-    padding: 32px 16px 0;
+    padding: 32px 0 0;
+    padding-bottom: 75px !important;
   }
 
-  .logoSection {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+  .newsletterBox {
+    padding: 16px;
   }
 
-  .logoText {
-    max-width: 100%;
-    padding-top: 0;
+  .heading {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
   }
 
-  .newsletterWrap {
-    width: 100%;
+  .list li {
+    margin-bottom: 8px;
   }
 
-  .bottomFlexWrapper {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
+  .list li a {
+    font-size: 0.8rem;
   }
 
-  .QuickLinkSec,
-  .BestSellersSec,
-  .CategoriesSec,
-  .InformationSec {
-    text-align: start;
-  }
-
-  .paymentsec,
-  .SocialLinks {
-    width: 100%;
-  }
-
-  .paymentIcons,
   .socialMediaSec {
     justify-content: flex-start;
   }
-}
-
-/* ── Responsive: mobile ──────────────────────────────────────────────────── */
-@media (max-width: 480px) {
-  .footer {
-    padding: 24px 12px 0;
-  }
-
-  .contactForm {
-    flex-direction: column;
-  }
-
-  .contactInput,
-  .contactButton {
-    width: 100%;
-    height: 40px;
-  }
-
-  .heading::after {
-    left: 0;
-  }
 
   .footerCopyright {
-    font-size: 0.72rem;
-    padding: 12px 16px;
-  }
-
-  .payIcon {
-    font-size: 1.6rem;
+    padding: 14px 16px;
+    margin-top: 20px;
+    padding-bottom: 85px !important;
   }
 }

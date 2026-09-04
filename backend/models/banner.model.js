@@ -20,7 +20,13 @@ const bannerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "SubCategory",
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
+
   { timestamps: true }
 );
 

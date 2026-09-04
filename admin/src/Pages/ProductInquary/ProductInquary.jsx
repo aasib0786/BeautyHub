@@ -48,11 +48,31 @@ const AllProductInquary = () => {
     fetchInquiries();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredInquiries = inquiries.filter((inquiry) =>
+    inquiry?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    inquiry?.phone?.includes(searchQuery) ||
+    inquiry?.productId?.productName?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <div className="bread">
         <div className="head">
           <h4>All product Inquiry</h4>
+        </div>
+        <div className="links d-flex align-items-center gap-3">
+          <div className="search-box" style={{ width: "260px" }}>
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              placeholder="🔍 Search inquiries, name, product..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ borderRadius: "20px", padding: "6px 14px" }}
+            />
+          </div>
         </div>
       </div>
 
@@ -63,28 +83,44 @@ const AllProductInquary = () => {
               <tr>
                 <th>Sr.No.</th>
                 <th>Full Name</th>
+                <th>Email</th>
                 <th>Phone</th>
-                <th>Size</th>
-                <th>product</th>
+                <th>Customer Requirement / Need</th>
+                <th>Product / Details</th>
                 <th>Date</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {inquiries.length > 0 ? (
-                inquiries.map((inquiry, index) => (
+              {filteredInquiries.length > 0 ? (
+                filteredInquiries.map((inquiry, index) => (
                   <tr key={inquiry._id}>
                     <td>{index + 1}</td>
-                    <td>{inquiry.name}</td>
-                    <td>{inquiry.phone}</td>
-                    <td>{inquiry.size}</td>
-                    <td >
-                      <div>
-                        <div>{inquiry?.productId?.productName}</div>
-                        <img src={inquiry?.productId?.images[0]} alt="" />
+                    <td className="fw-bold">{inquiry.name}</td>
+                    <td>{inquiry.email || <span className="text-muted">N/A</span>}</td>
+                    <td><a href={`tel:${inquiry.phone}`} className="text-decoration-none fw-bold">{inquiry.phone}</a></td>
+                    <td>
+                      <div className="badge bg-primary text-wrap text-start" style={{ maxWidth: "220px" }}>
+                        {inquiry.needDescription || inquiry.size || "AI Chat Shopping Inquiry"}
                       </div>
                     </td>
-                    <td>{new Date(inquiry.createdAt).toLocaleString()}</td>
+                    <td>
+                      {inquiry?.productId ? (
+                        <div className="d-flex align-items-center gap-2">
+                          {inquiry?.productId?.images?.[0] && (
+                            <img
+                              src={inquiry.productId.images[0]}
+                              alt=""
+                              style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px" }}
+                            />
+                          )}
+                          <span style={{ fontSize: "0.85rem" }}>{inquiry?.productId?.productName}</span>
+                        </div>
+                      ) : (
+                        <span className="badge bg-info text-dark">AI Chat Consultation</span>
+                      )}
+                    </td>
+                    <td style={{ fontSize: "0.8rem" }}>{new Date(inquiry.createdAt).toLocaleString()}</td>
                     <td>
                       <button
                         className="bt delete"
@@ -101,6 +137,7 @@ const AllProductInquary = () => {
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
       </section>

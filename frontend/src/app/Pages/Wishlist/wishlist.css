@@ -275,3 +275,34 @@
   text-align: center;
   box-shadow: 0 6px 20px rgba(0,0,0,0.03);
 }
+
+@media (max-width: 768px) {
+  .bh-wishlist-hero {
+    padding: 28px 0 34px;
+    text-align: center;
+  }
+  .bh-hero-inner {
+    margin: 0 auto;
+  }
+  .bh-hero-title {
+    font-size: 1.7rem;
+  }
+  .bh-hero-desc {
+    font-size: 0.85rem;
+  }
+  .bh-desktop-table-view {
+    display: none !important;
+  }
+  .bh-mobile-cards-view {
+    display: block !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .bh-desktop-table-view {
+    display: block !important;
+  }
+  .bh-mobile-cards-view {
+    display: none !important;
+  }
+}

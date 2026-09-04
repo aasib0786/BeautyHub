@@ -96,67 +96,93 @@ export default function CategoryExplorer() {
     <section className="category-explorer-section">
       <div className="container">
         <div className="category-header">
-          <span className="category-subtitle">Boutique Selection</span>
+          <span className="category-subtitle">✨ EXCLUSIVE COLLECTIONS ✨</span>
           <h2 className="category-title">Explore Main Categories & Collections</h2>
           <div className="category-divider"></div>
 
-          {/* Main Category Tabs */}
-          <div className="main-cat-tabs">
-            <button
-              className={`main-cat-tab-btn ${selectedMainCat === "all" ? "active" : ""}`}
-              onClick={() => setSelectedMainCat("all")}
-            >
-              ✨ All Main Categories
-            </button>
-            {mainCats.map((mc) => (
+          {/* Main Category Filter Scrollable Bar */}
+          <div className="main-cat-tabs-wrapper">
+            <div className="main-cat-tabs">
               <button
-                key={mc._id}
-                className={`main-cat-tab-btn ${
-                  selectedMainCat === mc._id ? "active" : ""
-                }`}
-                onClick={() => setSelectedMainCat(mc._id)}
+                className={`main-cat-tab-btn ${selectedMainCat === "all" ? "active" : ""}`}
+                onClick={() => setSelectedMainCat("all")}
               >
-                <span>{mc.icon || "💎"}</span> {mc.mainCategoryName}
+                <span className="tab-icon">✨</span> All Main Categories
               </button>
-            ))}
+              {mainCats.map((mc) => (
+                <button
+                  key={mc._id}
+                  className={`main-cat-tab-btn ${
+                    selectedMainCat === mc._id ? "active" : ""
+                  }`}
+                  onClick={() => setSelectedMainCat(mc._id)}
+                >
+                  {mc.mainCategoryImage ? (
+                    <img
+                      src={mc.mainCategoryImage}
+                      alt={mc.mainCategoryName}
+                      className="tab-img-thumb"
+                      onError={(e) => { e.target.style.display = "none"; }}
+                    />
+                  ) : (
+                    <span className="tab-icon">💎</span>
+                  )}
+                  <span>{mc.mainCategoryName}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
+
         {/* Category & SubCategory Cards Grid */}
         <div className="cat-cards-grid">
-          {filteredCategories.map((cat, idx) => (
-            <div key={cat._id || idx} className="cat-explore-card">
-              <div>
-                <span className="cat-explore-badge">
-                  {cat?.mainCategory?.mainCategoryName || "Beauty & Gifts"}
-                </span>
-                <h3 className="cat-explore-title">{cat.categoryName}</h3>
-                <p className="cat-explore-desc">
-                  {cat.description || "Discover premium skincare, gifts & plush items."}
-                </p>
+          {filteredCategories.map((cat, idx) => {
+            const catImage = cat?.categoryImage || cat?.mainCategory?.mainCategoryImage || "/icon1.jpg";
+            return (
+              <div key={cat._id || idx} className="cat-explore-card">
+                <div className="cat-card-img-container">
+                  <img
+                    src={catImage}
+                    alt={cat.categoryName}
+                    className="cat-card-img"
+                    onError={(e) => { e.target.src = "/icon1.jpg"; }}
+                  />
+                  <span className="cat-explore-badge">
+                    {cat?.mainCategory?.mainCategoryName || "Collection"}
+                  </span>
+                </div>
 
-                {/* Subcategory Pills */}
-                {cat.subcategories && cat.subcategories.length > 0 && (
-                  <div className="subcat-pills-wrapper">
-                    {cat.subcategories.map((sub, i) => (
-                      <span key={i} className="subcat-pill">
-                        {sub}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <div className="cat-card-content">
+                  <h3 className="cat-explore-title">{cat.categoryName}</h3>
+                  <p className="cat-explore-desc">
+                    {cat.description || `Explore finest ${cat.categoryName} collection & accessories.`}
+                  </p>
+
+                  {/* Subcategory Pills */}
+                  {cat.subcategories && cat.subcategories.length > 0 && (
+                    <div className="subcat-pills-wrapper">
+                      {cat.subcategories.slice(0, 3).map((sub, i) => (
+                        <span key={i} className="subcat-pill">
+                          {sub}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <Link
+                    href={`/Pages/category/${cat._id}`}
+                    className="cat-explore-action mt-auto"
+                  >
+                    Shop Collection ➔
+                  </Link>
+                </div>
               </div>
-
-              <Link
-                href={`/all-products?category=${cat._id}`}
-                className="cat-explore-action"
-              >
-                Shop Collection ➔
-              </Link>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
+
   );
 }

@@ -4,6 +4,7 @@ import Category from "../models/category.model.js";
 import SubCategory from "../models/subCategory.model.js";
 import Brand from "../models/brand.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
+import jwt from "jsonwebtoken";
 
 const createProduct = async (req, res) => {
   try {
@@ -96,6 +97,9 @@ const createProduct = async (req, res) => {
       }
     }
 
+    const createdBy = req?.user?._id || null;
+    const sellerName = seller || req?.user?.name || "";
+
     const newProduct = new Product({
       productName,
       images,
@@ -121,7 +125,8 @@ const createProduct = async (req, res) => {
       Specifications: Specifications || "",
       BrandCollectionOverview: BrandCollectionOverview || "",
       CareMaintenance: CareMaintenance || "",
-      seller: seller || "",
+      seller: sellerName,
+      createdBy: createdBy,
       Warranty: Warranty || "",
       size: parsedSize,
       ingredients: ingredients || "",
@@ -187,6 +192,12 @@ const updateProduct = async (req, res) => {
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (req.user?.role?.toLowerCase() === "vendor") {
+      if (product.createdBy && product.createdBy.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ message: "Unauthorized! You can only update your own products." });
+      }
     }
 
     let parsedSize = product.size;
@@ -264,7 +275,7 @@ const updateProduct = async (req, res) => {
     product.Specifications = Specifications ?? product.Specifications;
     product.BrandCollectionOverview = BrandCollectionOverview ?? product.BrandCollectionOverview;
     product.CareMaintenance = CareMaintenance ?? product.CareMaintenance;
-    product.seller = seller ?? product.seller;
+    if (seller !== undefined) product.seller = seller;
     product.Warranty = Warranty ?? product.Warranty;
     product.size = parsedSize;
 
@@ -293,11 +304,26 @@ const updateProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find()
+    let user = req?.user;
+    if (!user && req.cookies?.token) {
+      try {
+        user = jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY);
+      } catch (e) {
+        user = null;
+      }
+    }
+
+    let filter = {};
+    if (user && user.role?.toLowerCase() === "vendor") {
+      filter.createdBy = user._id;
+    }
+
+    const products = await Product.find(filter)
       .populate("mainCategory")
       .populate("category")
       .populate("subCategory")
       .populate("brand")
+      .populate("createdBy", "name email role")
       .sort({ createdAt: -1 });
 
     return res
@@ -320,7 +346,8 @@ const getSingleProduct = async (req, res) => {
       .populate("category")
       .populate("subCategory")
       .populate("brand")
-      .populate("size");
+      .populate("size")
+      .populate("createdBy", "name email role");
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
@@ -341,10 +368,18 @@ const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedProduct = await Product.findByIdAndDelete(id);
-    if (!deletedProduct) {
+    const product = await Product.findById(id);
+    if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
+
+    if (req.user?.role?.toLowerCase() === "vendor") {
+      if (product.createdBy && product.createdBy.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ message: "Unauthorized! You can only delete your own products." });
+      }
+    }
+
+    const deletedProduct = await Product.findByIdAndDelete(id);
 
     return res
       .status(200)

@@ -115,11 +115,15 @@ const deleteMainCategory = async (req, res) => {
 
 const getNavbarCategoriesTree = async (req, res) => {
   try {
-    const [mainCategories, categories, subCategories] = await Promise.all([
-      MainCategory.find().sort({ createdAt: -1 }),
+    // Strictly fetch ONLY MainCategories where isCollection === true (Show in Header/Navbar)
+    const mainCategories = await MainCategory.find({ isCollection: true }).sort({ createdAt: -1 });
+
+    const [categories, subCategories] = await Promise.all([
       Category.find().populate("mainCategory"),
       SubCategory.find().populate("Category").populate("mainCategory"),
     ]);
+
+
 
     const getIdStr = (val) => {
       if (!val) return "";

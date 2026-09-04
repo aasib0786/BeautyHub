@@ -44,15 +44,26 @@ export default function ProductDetailPage() {
   const router = useRouter();
 
   // ── States ──────────────────────────────────────────────────────────────────
-  const [product, setProduct]                 = useState(null);
-  const [loading, setLoading]                 = useState(true);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [quantity, setQuantity]               = useState(1);
-  const [activeTab, setActiveTab]             = useState("overview");
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [activeTab, setActiveTab] = useState("overview");
+
+  // Reviews States
+  const [reviews, setReviews] = useState([]);
+  const [reviewsSummary, setReviewsSummary] = useState({ totalReviews: 0, averageRating: 5.0 });
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewName, setReviewName] = useState("");
+  const [reviewEmail, setReviewEmail] = useState("");
+  const [reviewComment, setReviewComment] = useState("");
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   // Redux Selectors
-  const { user }     = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const { wishlist } = useSelector((state) => state.wishlist);
 
   // ── Fetch Product Details ───────────────────────────────────────────────────
@@ -73,12 +84,70 @@ export default function ProductDetailPage() {
         if (data?.subCategory?._id) {
           fetchRelatedProducts(data.subCategory._id);
         }
+
+        // Fetch product customer reviews
+        fetchProductReviews(productId);
       }
     } catch (error) {
       console.error("Product details error:", error);
       toast.error("Failed to load product details.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchProductReviews = async (productId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/v1/review/product/${productId}`
+      );
+      if (response.status === 200 && response?.data) {
+        setReviews(response.data.reviews || []);
+        setReviewsSummary({
+          totalReviews: response.data.totalReviews || (response.data.reviews || []).length,
+          averageRating: response.data.averageRating || 5.0,
+        });
+      }
+    } catch (error) {
+      console.error("Fetch reviews error:", error);
+    }
+  };
+
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    const productId = extractIdFromSlug(id);
+    if (!productId) return;
+
+    if (!reviewName.trim()) {
+      toast.error("Please enter your name.");
+      return;
+    }
+    if (!reviewComment.trim()) {
+      toast.error("Please write your review thoughts.");
+      return;
+    }
+
+    try {
+      setSubmittingReview(true);
+      const response = await axiosInstance.post("/api/v1/review/create", {
+        productId,
+        name: reviewName.trim(),
+        email: reviewEmail.trim() || user?.email || "",
+        rating: reviewRating,
+        reviewText: reviewComment.trim(),
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Thank you! Review submitted successfully.");
+        setReviewComment("");
+        setShowReviewForm(false);
+        fetchProductReviews(productId);
+      }
+    } catch (error) {
+      console.error("Review submit error:", error);
+      toast.error(error?.response?.data?.message || "Failed to submit review.");
+    } finally {
+      setSubmittingReview(false);
     }
   };
 
@@ -164,20 +233,20 @@ export default function ProductDetailPage() {
       dispatch(
         AddToCartToServer({
           productId: product._id,
-          quantity:  quantity,
+          quantity: quantity,
         })
       );
     } else {
       dispatch(
         addToCart({
-          productId:  product._id,
-          quantity:   quantity,
-          image:      product.images?.[0],
+          productId: product._id,
+          quantity: quantity,
+          image: product.images?.[0],
           finalPrice: product.finalPrice,
-          name:       product.productName,
-          stock:      maxStock,
-          discount:   product.discount,
-          price:      product.price,
+          name: product.productName,
+          stock: maxStock,
+          discount: product.discount,
+          price: product.price,
         })
       );
     }
@@ -304,7 +373,11 @@ export default function ProductDetailPage() {
                   </div>
 
                   {/* Main Image */}
-                  <div className="bh-main-img-wrap">
+                  <div
+                    className="bh-main-img-wrap"
+                    onClick={() => setIsImageModalOpen(true)}
+                    title="Click to view full image"
+                  >
                     <Image
                       src={currentImage}
                       alt={product.productName}
@@ -313,6 +386,9 @@ export default function ProductDetailPage() {
                       sizes="(max-width: 768px) 100vw, 50vw"
                       className="bh-main-img"
                     />
+                    <div className="bh-zoom-hint">
+                      <IoSparkles /> Full Screen View
+                    </div>
                   </div>
                 </div>
 
@@ -355,12 +431,16 @@ export default function ProductDetailPage() {
                 <h1 className="bh-title">{product.productName}</h1>
 
                 {/* Rating & Reviews */}
-                <div className="bh-rating-row">
+                <div
+                  className="bh-rating-row"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setActiveTab("reviews")}
+                >
                   <div className="bh-stars">
                     <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
                   </div>
-                  <span className="bh-rating-score">4.9</span>
-                  <span className="bh-rating-count">(180+ verified reviews)</span>
+                  <span className="bh-rating-score">{reviewsSummary.averageRating}</span>
+                  <span className="bh-rating-count">({reviews.length || '180+'} verified reviews)</span>
                   <span className="bh-stock-badge in-stock">
                     <FaCheckCircle /> In Stock
                   </span>
@@ -519,9 +599,178 @@ export default function ProductDetailPage() {
                 >
                   🚚 Shipping &amp; Warranty
                 </button>
+                <button
+                  className={`bh-tab-btn ${activeTab === "reviews" ? "active" : ""}`}
+                  onClick={() => setActiveTab("reviews")}
+                >
+                  ⭐ Customer Reviews ({reviews.length})
+                </button>
               </div>
 
               <div className="bh-tab-content">
+                {activeTab === "reviews" && (
+                  <div className="bh-tab-pane">
+                    <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                      <div>
+                        <h3 className="bh-pane-title mb-1">Customer Reviews &amp; Ratings</h3>
+                        <p className="text-muted small m-0">Verified feedback from BeautyHub buyers</p>
+                      </div>
+                      <button
+                        className="btn btn-outline-primary rounded-pill px-4 fw-bold"
+                        style={{ borderColor: "#c2185b", color: "#c2185b" }}
+                        onClick={() => setShowReviewForm(!showReviewForm)}
+                      >
+                        {showReviewForm ? "✕ Close Review Form" : "✍️ Write a Customer Review"}
+                      </button>
+                    </div>
+
+                    {/* Write Review Form */}
+                    {showReviewForm && (
+                      <div className="card p-4 border rounded-4 mb-4 shadow-sm" style={{ background: "#ffffff", borderColor: "#fce4ec" }}>
+                        <h5 className="fw-bold mb-3" style={{ color: "#c2185b" }}>Share Your Experience with {product.productName}</h5>
+                        <form onSubmit={handleSubmitReview}>
+                          {/* Star Rating Picker */}
+                          <div className="mb-3">
+                            <label className="form-label fw-semibold d-block">Overall Rating *</label>
+                            <div className="d-flex gap-2 align-items-center">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                  type="button"
+                                  key={star}
+                                  className="btn p-0 border-0 fs-3"
+                                  style={{ color: star <= reviewRating ? "#ffc107" : "#e0e0e0" }}
+                                  onClick={() => setReviewRating(star)}
+                                >
+                                  ★
+                                </button>
+                              ))}
+                              <span className="ms-2 fw-bold text-muted small">
+                                {reviewRating === 5 ? "5/5 - Outstanding" : reviewRating === 4 ? "4/5 - Very Good" : reviewRating === 3 ? "3/5 - Average" : reviewRating === 2 ? "2/5 - Fair" : "1/5 - Poor"}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="row g-3 mb-3">
+                            <div className="col-md-6">
+                              <label className="form-label fw-semibold">Your Name *</label>
+                              <input
+                                type="text"
+                                className="form-control rounded-3"
+                                placeholder="e.g. Priya Sharma"
+                                value={reviewName}
+                                onChange={(e) => setReviewName(e.target.value)}
+                                required
+                              />
+                            </div>
+                            <div className="col-md-6">
+                              <label className="form-label fw-semibold">Email Address (Optional)</label>
+                              <input
+                                type="email"
+                                className="form-control rounded-3"
+                                placeholder="name@example.com"
+                                value={reviewEmail}
+                                onChange={(e) => setReviewEmail(e.target.value)}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="mb-3">
+                            <label className="form-label fw-semibold">Your Review &amp; Thoughts *</label>
+                            <textarea
+                              className="form-control rounded-3"
+                              rows={4}
+                              placeholder="Describe product texture, longevity, scent, or effectiveness..."
+                              value={reviewComment}
+                              onChange={(e) => setReviewComment(e.target.value)}
+                              required
+                            />
+                          </div>
+
+                          <button
+                            type="submit"
+                            className="btn btn-primary rounded-pill px-4 fw-bold"
+                            style={{ background: "#c2185b", borderColor: "#c2185b" }}
+                            disabled={submittingReview}
+                          >
+                            {submittingReview ? "Submitting..." : "Submit Review ✨"}
+                          </button>
+                        </form>
+                      </div>
+                    )}
+
+                    {/* Rating Overview Box */}
+                    <div className="row g-3 align-items-center p-3 mb-4 rounded-4" style={{ background: "#fff5f8", border: "1px solid #fce4ec" }}>
+                      <div className="col-md-3 text-center border-end">
+                        <h1 className="fw-bold m-0" style={{ color: "#c2185b", fontSize: "3rem" }}>{reviewsSummary.averageRating}</h1>
+                        <div className="text-warning fs-5">★★★★★</div>
+                        <p className="text-muted small m-0 mt-1">Based on {reviews.length} reviews</p>
+                      </div>
+                      <div className="col-md-9 px-4">
+                        <div className="d-flex align-items-center gap-2 mb-1">
+                          <span className="small fw-semibold" style={{ width: "30px" }}>5 ★</span>
+                          <div className="progress flex-grow-1" style={{ height: "8px" }}>
+                            <div className="progress-bar bg-warning" style={{ width: `${reviews.length ? (reviews.filter(r => r.rating === 5).length / reviews.length) * 100 : 90}%` }}></div>
+                          </div>
+                          <span className="small text-muted">{reviews.filter(r => r.rating === 5).length}</span>
+                        </div>
+                        <div className="d-flex align-items-center gap-2 mb-1">
+                          <span className="small fw-semibold" style={{ width: "30px" }}>4 ★</span>
+                          <div className="progress flex-grow-1" style={{ height: "8px" }}>
+                            <div className="progress-bar bg-warning" style={{ width: `${reviews.length ? (reviews.filter(r => r.rating === 4).length / reviews.length) * 100 : 10}%` }}></div>
+                          </div>
+                          <span className="small text-muted">{reviews.filter(r => r.rating === 4).length}</span>
+                        </div>
+                        <div className="d-flex align-items-center gap-2 mb-1">
+                          <span className="small fw-semibold" style={{ width: "30px" }}>3 ★</span>
+                          <div className="progress flex-grow-1" style={{ height: "8px" }}>
+                            <div className="progress-bar bg-warning" style={{ width: `${reviews.length ? (reviews.filter(r => r.rating === 3).length / reviews.length) * 100 : 0}%` }}></div>
+                          </div>
+                          <span className="small text-muted">{reviews.filter(r => r.rating === 3).length}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Reviews List */}
+                    {reviews.length === 0 ? (
+                      <div className="text-center py-5">
+                        <p className="text-muted">No reviews yet for this product. Be the first to share your thoughts!</p>
+                      </div>
+                    ) : (
+                      <div className="d-flex flex-col gap-3">
+                        {reviews.map((rev, idx) => (
+                          <div key={rev._id || idx} className="p-3 bg-white rounded-3 border mb-3 shadow-sm">
+                            <div className="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+                              <div className="d-flex align-items-center gap-2">
+                                <div
+                                  className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                                  style={{ width: "36px", height: "36px", background: "#c2185b" }}
+                                >
+                                  {(rev.name || "U").charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                  <strong className="d-block">{rev.name}</strong>
+                                  <span className="badge bg-success-subtle text-success border border-success-subtle py-0 px-1" style={{ fontSize: "0.75rem" }}>
+                                    ✓ Verified Buyer
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="text-end">
+                                <span className="text-warning fs-6">
+                                  {"★".repeat(Math.round(rev.rating || 5))}
+                                  {"☆".repeat(5 - Math.round(rev.rating || 5))}
+                                </span>
+                                <div className="text-muted small">{new Date(rev.createdAt || Date.now()).toLocaleDateString()}</div>
+                              </div>
+                            </div>
+                            <p className="m-0 text-secondary" style={{ lineHeight: "1.6" }}>
+                              {rev.reviewText || rev.comment}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
                 {activeTab === "overview" && (
                   <div className="bh-tab-pane">
                     <h3 className="bh-pane-title">Product Specifications</h3>
@@ -713,6 +962,30 @@ export default function ProductDetailPage() {
         </section>
 
       </div>
+
+      {/* ── Full Image Lightbox Modal ── */}
+      {isImageModalOpen && (
+        <div
+          className="bh-image-modal-overlay"
+          onClick={() => setIsImageModalOpen(false)}
+        >
+          <div className="bh-image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="bh-image-modal-close"
+              onClick={() => setIsImageModalOpen(false)}
+              title="Close"
+            >
+              ✕
+            </button>
+            <img
+              src={currentImage}
+              alt={product.productName}
+              className="bh-image-modal-img"
+            />
+            <div className="bh-image-modal-caption">{product.productName}</div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -842,11 +1115,48 @@ const customCSS = `
     position: relative;
     width: 100%;
     height: 480px;
-    background: #fdf5f8;
+    background: #ffffff;
+    padding: 16px;
+    cursor: zoom-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
   }
 
   .bh-main-img {
-    object-fit: cover;
+    object-fit: contain !important;
+    padding: 8px;
+    transition: transform 0.35s ease;
+  }
+
+  .bh-main-img-wrap:hover .bh-main-img {
+    transform: scale(1.04);
+  }
+
+  .bh-zoom-hint {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    background: rgba(17, 24, 39, 0.78);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    opacity: 0.9;
+    transition: opacity 0.2s, background 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .bh-main-img-wrap:hover .bh-zoom-hint {
+    opacity: 1;
+    background: #c2185b;
   }
 
   /* Thumbnails */
@@ -868,7 +1178,7 @@ const customCSS = `
     background: #fff;
     cursor: pointer;
     transition: border-color 0.25s, transform 0.25s;
-    padding: 0;
+    padding: 4px;
   }
 
   .bh-thumb-btn:hover, .bh-thumb-btn.active {
@@ -877,9 +1187,81 @@ const customCSS = `
   }
 
   .bh-thumb-img {
-    object-fit: cover;
+    object-fit: contain !important;
     width: 100%;
     height: 100%;
+  }
+
+  /* Full Image Modal Lightbox */
+  .bh-image-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .bh-image-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bh-image-modal-close {
+    position: absolute;
+    top: -48px;
+    right: 0;
+    background: #ffffff;
+    color: #111827;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+  }
+
+  .bh-image-modal-close:hover {
+    transform: scale(1.1);
+    background: #fce4ec;
+    color: #c2185b;
+  }
+
+  .bh-image-modal-img {
+    max-width: 88vw;
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    background: #ffffff;
+    padding: 16px;
+  }
+
+  .bh-image-modal-caption {
+    color: #ffffff;
+    margin-top: 14px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: center;
+    max-width: 80vw;
   }
 
   /* Info Column */

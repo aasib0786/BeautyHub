@@ -766,7 +766,7 @@ const customCSS = `
 
   .bh-card-img-wrap { position: relative; width: 100%; height: 230px; overflow: hidden; background: #fdf5f8; display: block; }
 
-  .bh-card-img { object-fit: cover; transition: transform 0.5s ease !important; }
+  .bh-card-img { object-fit: contain !important; padding: 6px; transition: transform 0.5s ease !important; }
 
   .bh-card:hover .bh-card-img { transform: scale(1.08) !important; }
 

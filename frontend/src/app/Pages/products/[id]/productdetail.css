@@ -1,17 +1,17 @@
 :root {
-    --brownlight:  #153964;;
+    --brownlight:  #153964;
     --browndark:  #153964;
 }
 
 .product-details-content {
     padding: 1rem;
-    overflow-y: scroll;
-    height: 80vh;
-    scrollbar-width: none;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
 }
 
 .product-details-content .details-heading {
-    font-size: 35px;
+    font-size: clamp(22px, 4vw, 35px);
     font-weight: 800;
     color: #153964;
 }
@@ -27,16 +27,17 @@
     gap: 10px;
     align-items: center;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
 }
 
 .price-section .final-price {
-    font-size: 24px;
+    font-size: clamp(18px, 3vw, 24px);
     font-weight: 600;
     margin: 0;
 }
 
 .price-section .price {
-    font-size: 20px;
+    font-size: clamp(16px, 2.5vw, 20px);
     margin: 0;
 }
 
@@ -49,32 +50,32 @@
 .price-section .discount {
     color: green;
     font-weight: 600;
-    font-size: 20px;
+    font-size: clamp(16px, 2.5vw, 20px);
     margin: 0;
 }
 
 .product-details-cart-button {
     margin-top: 2rem;
     display: flex;
-    gap: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .add-to-cart {
     background-color:  #153964;
     padding: 10px 20px;
     border-radius: 5px;
-    /* border: none; */
     color: white;
     width: 100%;
-    font-size: 18px;      
+    font-size: 16px;      
     font-weight: 600;
 }
 
-.cartbtn{
+.cartbtn {
     border: none; 
     color: white;
     width: 100%;
-    font-size: 18px;      
+    font-size: 16px;      
     font-weight: 600;
     background-color: #153964;
 }
@@ -85,7 +86,7 @@
     border-radius: 5px;
     border: none;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -95,7 +96,7 @@
     border-radius: 20px;
     padding: 10px 20px;
     border: none;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
 }
 
@@ -104,8 +105,10 @@
     justify-content: center;
     gap: 20px;
     align-items: center;
-    background-color:  #e3eefc;;
+    background-color:  #e3eefc;
     padding: 10px;
+    flex-wrap: wrap;
+    border-radius: 8px;
 }
 
 .cal-contact-section p,
@@ -121,7 +124,9 @@
 }
 
 .calling-main {
-    display: contents;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .calling-main .icn {
@@ -139,107 +144,114 @@
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #eee;
-   
-  }
-  .CategoriesBtn{
-    padding:10px ;
-    border:none;
-    color:white;
-    
-    background-color: #153964;
-  }
+}
 
-  .detailTitle{
+.CategoriesBtn {
+    padding: 10px;
+    border: none;
+    color: white;
+    background-color: #153964;
+}
+
+.detailTitle {
     font-size: 15px;
     color: #153964;
-  }
+}
 
-    .AddBtn{
-    padding:10px ;
-    border:none;
-    color:white;
+.AddBtn {
+    padding: 10px;
+    border: none;
+    color: white;
     background-color: #153964;
-    border-radius:0px 10px 10px 0px;
-  }
-.CategoriesBtnHover{
-        padding:10px ;
-    border:none;
+    border-radius: 0px 10px 10px 0px;
+}
+
+.CategoriesBtnHover {
+    padding: 10px;
+    border: none;
     border-radius: 10px;
-    color:white;
+    color: white;
     background-color: gray;
 }
 
-  .SizeBtn{
-    padding:10px ;
-    border:none;
-    color:white;
+.SizeBtn {
+    padding: 10px;
+    border: none;
+    color: white;
     border-radius: 10px;
     background-color: #153964;
-  }
+}
 
-  .SizeBtnHover{
-        padding:10px ;
-    border:none;
+.SizeBtnHover {
+    padding: 10px;
+    border: none;
     border-radius: 10px;
-    color:white;
+    color: white;
     background-color: gray;
 }
 
-.ThicknesSection{
-    display:flex;
+.ThicknesSection {
+    display: flex;
     flex-wrap: wrap;
-    gap:10px;
+    gap: 10px;
 }
 
-.ThicknessSection{
-padding:20px 0px;
+.ThicknessSection {
+    padding: 20px 0px;
 }
 
-  @media (max-width:768px){
-    .cal-contact-section h2{
-       font-size:12px;
-      
+@media (max-width: 992px) {
+    .product-details-content {
+        padding: 0.5rem 0;
     }
-    .calling-main{
-        display: grid;
+}
 
+@media (max-width: 768px) {
+    .product-details-cart-button {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .cal-contact-section h2 {
+        font-size: 12px;
+    }
+    .calling-main {
+        display: flex;
     }
     .calling-main .icn {
         font-size: 23px;
         color:  #153964;
     }
-    .textOr{
+    .textOr {
         display: none;
-
     }
     .cal-contact-section {
-       justify-content:left;
-       gap: 30px;
+        justify-content: flex-start;
+        gap: 15px;
     }
-.mobilenotshow a{
-    display: none;
-}
-.mobilenotshow p{
-   font-size: 12px;
-}
-
-
-    .request-call{
-        padding: 10px 12px;
+    .mobilenotshow a {
+        display: none;
+    }
+    .mobilenotshow p {
         font-size: 12px;
+    }
+    .request-call {
+        padding: 8px 14px;
+        font-size: 12px;
+        width: 100%;
+        text-align: center;
     }
     .product-image {
         width: 100%;
-        height: 85px;
+        height: 180px;
     }
     .product-price-section p {
         font-size: 12px;
     }
-    
     .product-details h3 {
-        font-size: 12px;
+        font-size: 13px;
     }
-  }
+}
+
 
 
 

@@ -4,10 +4,21 @@ import Swal from 'sweetalert2';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance, { getData, postData } from '../../services/FetchNodeServices';
+import { hasPermission } from '../../services/permissionHelper';
 
 const AllCoupon = () => {
     const [coupons, setCoupons] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const storedUser = JSON.parse(sessionStorage.getItem("adminUser") || "{}");
+    const storedRoleDetails = JSON.parse(sessionStorage.getItem("adminRoleDetails") || "null");
+
+    const canWrite = hasPermission(storedUser, storedRoleDetails, "Manage Coupons", "write");
+    const canUpdate = hasPermission(storedUser, storedRoleDetails, "Manage Coupons", "update");
+    const canDelete = hasPermission(storedUser, storedRoleDetails, "Manage Coupons", "delete");
+
+
 
     useEffect(() => {
         const fetchCoupons = async () => {
@@ -79,6 +90,13 @@ const AllCoupon = () => {
         }
     };
 
+
+
+    const filteredCoupons = coupons?.filter((coupon) =>
+        coupon?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        coupon?.couponCode?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     // Loading state
     if (isLoading) {
         return <p>Loading Coupons...</p>;
@@ -91,29 +109,24 @@ const AllCoupon = () => {
                 <div className="head">
                     <h4>All Coupons</h4>
                 </div>
-                <div className="links">
-                    <Link to="/add-coupon" className="add-new">
-                        Add New <i className="fa-solid fa-plus"></i>
-                    </Link>
+                <div className="links d-flex align-items-center gap-3">
+                    <div className="search-box" style={{ width: "240px" }}>
+                        <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder="🔍 Search coupons or code..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ borderRadius: "20px", padding: "6px 14px" }}
+                        />
+                    </div>
+                    {canWrite && (
+                        <Link to="/add-coupon" className="add-new">
+                            Add New <i className="fa-solid fa-plus"></i>
+                        </Link>
+                    )}
                 </div>
             </div>
-
-            {/* <div className="filteration">
-                <div className="selects">
-                  
-                </div>
-                <div className="search">
-                    <label htmlFor="search">Search</label>&nbsp;
-                    <input
-                        type="text"
-                        name="search"
-                        id="search"
-                        onChange={(e) => {
-                            // Implement search filtering logic here if necessary
-                        }}
-                    />
-                </div>
-            </div> */}
 
             <section className="main-table">
                 <table className="table table-bordered table-striped table-hover">
@@ -124,13 +137,14 @@ const AllCoupon = () => {
                             <th scope="col">Coupon Code</th>
                             <th scope="col">Discount</th>
                             <th scope="col">Show Top in Home Page</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
+                            {canUpdate && <th scope="col">Edit</th>}
+                            {canDelete && <th scope="col">Delete</th>}
                         </tr>
                     </thead>
                     <tbody>
-                        {coupons?.length > 0 ? (
-                            coupons.map((coupon, index) => (
+                        {filteredCoupons?.length > 0 ? (
+                            filteredCoupons.map((coupon, index) => (
+
                                 <tr key={coupon._id}>
                                     <th scope="row">{index + 1}</th>
                                     <td>{coupon?.title || "-"}</td>
@@ -140,20 +154,26 @@ const AllCoupon = () => {
                                     <td>
                                         <input
                                             type="checkbox"
+                                            disabled={!canUpdate}
                                             checked={coupon?.isActive}
-                                            onChange={(e) => handleCheckboxChange(e, coupon._id)}
+                                            onChange={(e) => canUpdate && handleCheckboxChange(e, coupon._id)}
+                                            style={{ cursor: canUpdate ? "pointer" : "not-allowed" }}
                                         />
                                     </td>
-                                    <td>
-                                        <Link to={`/edit-coupon/${coupon?._id}`} className="bt edit">
-                                            Edit <i className="fa-solid fa-pen-to-square"></i>
-                                        </Link>
-                                    </td>
-                                    <td>
-                                        <button className="bt delete" onClick={() => handleDelete(coupon?._id)}>
-                                            Delete <i className="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
+                                    {canUpdate && (
+                                        <td>
+                                            <Link to={`/edit-coupon/${coupon?._id}`} className="bt edit">
+                                                Edit <i className="fa-solid fa-pen-to-square"></i>
+                                            </Link>
+                                        </td>
+                                    )}
+                                    {canDelete && (
+                                        <td>
+                                            <button className="bt delete" onClick={() => handleDelete(coupon?._id)}>
+                                                Delete <i className="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    )}
                                 </tr>
                             ))
                         ) : (
@@ -164,6 +184,7 @@ const AllCoupon = () => {
                             </tr>
                         )}
                     </tbody>
+
                 </table>
             </section>
         </>
