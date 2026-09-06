@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, {
-  getData,
-  postData,
-} from "../../services/FetchNodeServices";
+import axiosInstance from "../../services/FetchNodeServices";
 import { hasPermission } from "../../services/permissionHelper";
 
 const AllVideos = () => {
@@ -70,33 +67,6 @@ const AllVideos = () => {
       }
     }
   };
-
-  const handleCheckboxChange = async (e, videoId) => {
-    const updatedStatus = e.target.checked;
-
-    try {
-      const response = await postData("api/video/change-status", {
-        videoId: videoId,
-        status: updatedStatus,
-      });
-
-      if (response.success) {
-        const updatedVideos = videos.map((video) => {
-          if (video._id === videoId) {
-            video.status = updatedStatus;
-          }
-          return video;
-        });
-        setVideos(updatedVideos);
-        toast.success("Video status updated");
-      }
-    } catch (error) {
-      toast.error("Error updating video status");
-      console.error("Error updating video status:", error);
-    }
-  };
-
-
 
   const filteredVideos = videos.filter((v) =>
     v?.videoUrl?.toLowerCase().includes(searchQuery.toLowerCase()) ||

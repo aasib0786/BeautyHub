@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, {
-  getData,
-  postData,
-  serverURL,
-} from "../../services/FetchNodeServices";
+import axiosInstance from "../../services/FetchNodeServices";
 
 const EditOrder = () => {
   const { id } = useParams();
@@ -40,6 +36,7 @@ const EditOrder = () => {
 
   useEffect(() => {
     getApiData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChangeStatus = async (e, title) => {
@@ -89,7 +86,7 @@ setTimeout(() => {
     const payload = { email, password };
 
     try {
-      const response = await postData(
+      const response = await axiosInstance.post(
         "api/shiprocket/login-via-shiprocket",
         payload
       );
@@ -111,7 +108,7 @@ setTimeout(() => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await postData(
+      const response = await axiosInstance.post(
         "api/shiprocket/shiped-order-shiprocket",
         { ...orderData, token }
       );

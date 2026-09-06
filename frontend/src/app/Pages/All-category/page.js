@@ -218,7 +218,7 @@ export default function AllCategory() {
             <div className="bh-empty-state text-center py-5">
               <div className="bh-empty-icon mb-3" style={{ fontSize: "3rem" }}>🔍</div>
               <h3>No Categories Found</h3>
-              <p className="text-muted">We couldn't find any category matching your filter criteria.</p>
+              <p className="text-muted">We couldn&apos;t find any category matching your filter criteria.</p>
               <button className="btn bh-btn-cart px-4 py-2 mt-2" onClick={resetFilters}>
                 View All Categories
               </button>

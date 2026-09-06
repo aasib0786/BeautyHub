@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getData, postData, serverURL } from "../../services/FetchNodeServices";
+import { getData } from "../../services/FetchNodeServices";
 
 const AllWishList = () => {
     const [wishList, setWishList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
+    const currentPage = 1;
 
     const fetchSizes = async (page = currentPage) => {
         try {
@@ -31,7 +30,8 @@ const AllWishList = () => {
 
     useEffect(() => {
         fetchSizes();
-    }, [currentPage]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleDelete = async (id) => {
         const confirmed = await Swal.fire({

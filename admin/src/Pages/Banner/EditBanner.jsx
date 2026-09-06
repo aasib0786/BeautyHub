@@ -1,13 +1,8 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, {
-  getData,
-  postData,
-  serverURL,
-} from "../../services/FetchNodeServices";
+import axiosInstance from "../../services/FetchNodeServices";
 import { fileLimit } from "../../services/fileLimit";
 
 const EditBanner = () => {
@@ -114,6 +109,7 @@ const EditBanner = () => {
   useEffect(() => {
     fetchCollections();
     fetchBannerData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   return (
     <>

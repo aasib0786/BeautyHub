@@ -1,24 +1,18 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, { postData } from "../../services/FetchNodeServices";
+import axiosInstance from "../../services/FetchNodeServices";
 import { fileLimit } from "../../services/fileLimit";
 
 const AddCertificate = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({ status: false, });
+  const [formData] = useState({ status: false, });
   const [image, setImage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setImage(e.target.files[0]);
-  };
-
-  const handleCheckboxChange = (e) => {
-    const { checked } = e.target;
-    setFormData(prev => ({ ...prev, status: checked }));
   };
 
   const handleSubmit = async (e) => {

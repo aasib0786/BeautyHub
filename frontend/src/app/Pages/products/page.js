@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -18,7 +18,7 @@ import {
   removeFromWishlistToServer,
 } from "@/app/redux/slice/wislistSlice";
 import { addToCart, AddToCartToServer } from "@/app/redux/slice/cartSlice";
-import { FaHeart, FaRegHeart, FaStar, FaSearch, FaArrowRight, FaShoppingBag, FaSlidersH, FaTimes, FaTags } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaStar, FaSearch, FaArrowRight, FaShoppingBag, FaSlidersH, FaTags } from "react-icons/fa";
 import { IoSparkles, IoChevronForward } from "react-icons/io5";
 
 // ─── Price Filter Ranges ───────────────────────────────────────────────────────
@@ -38,7 +38,7 @@ const DISCOUNT_OPTIONS = [
   { id: "40", label: "40% or more", min: 40 },
 ];
 
-export default function AllProductsPage() {
+function ProductsPageContent() {
   const dispatch = useDispatch();
   const router   = useRouter();
   const searchParams = useSearchParams();
@@ -75,7 +75,7 @@ export default function AllProductsPage() {
     } else {
       dispatch(loadWishlistFromLocalStorage());
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, categories.length]);
 
   // ── Wishlist Toggle Handler ────────────────────────────────────────────────
   const handleWishlistToggle = async (e, product) => {
@@ -467,7 +467,7 @@ export default function AllProductsPage() {
               <div className="bh-empty-state">
                 <div className="bh-empty-icon">🛍️</div>
                 <h3>No Products Found</h3>
-                <p>We couldn't find any products matching your selected search or filters.</p>
+                <p>We couldn&apos;t find any products matching your selected search or filters.</p>
                 <button className="bh-btn-reset-large" onClick={resetFilters}>
                   Clear All Filters
                 </button>
@@ -592,6 +592,14 @@ export default function AllProductsPage() {
 
       </div>
     </>
+  );
+}
+
+export default function AllProductsPage() {
+  return (
+    <Suspense fallback={<div className="p-5 text-center text-pink-600 fw-bold">Loading BeautyHub Catalogue...</div>}>
+      <ProductsPageContent />
+    </Suspense>
   );
 }
 

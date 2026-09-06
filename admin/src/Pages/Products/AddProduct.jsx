@@ -21,7 +21,6 @@ const AddProduct = () => {
   const [subcategoryList, setSubcategoryList] = useState([]);
   const [filteredSubcategoryList, setFilteredSubcategoryList] = useState([]);
   const [brandList, setBrandList] = useState([]);
-  const [sizeList, setSizeList] = useState([]);
 
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -36,7 +35,7 @@ const AddProduct = () => {
   // Features list state
   const [featureInput, setFeatureInput] = useState("");
   const [features, setFeatures] = useState([]);
-
+  const [sizeList, setSizeList] = useState([]);
 
   // SEO Attributes (Multiple Key-Value Pairs) state
   const [seoAttributes, setSeoAttributes] = useState([

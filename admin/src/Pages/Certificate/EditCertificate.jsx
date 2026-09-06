@@ -1,29 +1,20 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, { getData, postData } from "../../services/FetchNodeServices";
+import axiosInstance from "../../services/FetchNodeServices";
 import { fileLimit } from "../../services/fileLimit";
 
 const EditCertificate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [sizeData, setSizeData] = useState({ size: "", status: false });
-    const [image, setImage] = useState("");
+  const [image, setImage] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
 
   useEffect(() => {
     const fetchSize = async () => {
       try {
-        const response = await axiosInstance.get(`/api/v1/certificate/get-certificate/${id}`);
-        if (response?.status===200) {
-          setSizeData({
-            ...response.data,
-            size: response.data.certificateImage,
-            status: response.data.isActive,
-          });
-        }
+        await axiosInstance.get(`/api/v1/certificate/get-certificate/${id}`);
       } catch (error) {
         toast.error(
           error.response
@@ -38,11 +29,6 @@ const EditCertificate = () => {
 
   const handleChange = (e) => {
     setImage(e.target.files[0]);
-  };
-
-  const handleCheckboxChange = (e) => {
-    const { checked } = e.target;
-    setSizeData(prev => ({ ...prev, status: checked }));
   };
 
   const handleSubmit = async (e) => {

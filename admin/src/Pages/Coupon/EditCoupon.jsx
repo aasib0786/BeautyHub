@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, { postData } from "../../services/FetchNodeServices";
+import axiosInstance from "../../services/FetchNodeServices";
 
 const AddCoupon = () => {
   const [isLoading, setIsLoading] = useState(false);

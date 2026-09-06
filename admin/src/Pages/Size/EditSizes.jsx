@@ -44,6 +44,7 @@ const EditSizes = () => {
 
   useEffect(() => {
     fetchSizeDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ---------------- BASIC ---------------- */

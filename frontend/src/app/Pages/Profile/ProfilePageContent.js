@@ -338,7 +338,7 @@ const Address = ({ name, phone, address, pincode, city }) => {
       pincode: pincode,
       city: city,
     });
-  }, []);
+  }, [name, phone, address, pincode, city]);
   return (
     <div className="container">
       <div className="card shadow p-4 mb-5">

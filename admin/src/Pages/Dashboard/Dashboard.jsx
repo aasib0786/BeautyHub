@@ -12,13 +12,11 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [banners, setBanners] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [userWishlists, setUserWishlists] = useState([]);
   const [rewardPoints, setRewardPoints] = useState([]);
   const [products, setProducts] = useState([]);
   const [coupones, setCoupones] = useState([]);
   const [orders, setOrders] = useState([]);
   const [videos, setVideos] = useState([]);
-  const [daySales, setDaySales] = useState([]); // Holds sales data for charts
 
   useEffect(() => {
     const fetchData = async () => {

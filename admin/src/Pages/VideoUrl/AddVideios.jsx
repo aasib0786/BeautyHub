@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, { postData, getData } from "../../services/FetchNodeServices"; // Assuming getData is a function to fetch data
+import axiosInstance from "../../services/FetchNodeServices";
 
 const AddVideos = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({ videoFile: null, productId: "" });
     const [previewUrl, setPreviewUrl] = useState("");
     const [products, setProducts] = useState([]);
-    const [selectedProduct, setSelectedProduct] = useState("");
 
     const navigate = useNavigate();
 

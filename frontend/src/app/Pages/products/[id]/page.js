@@ -175,6 +175,7 @@ export default function ProductDetailPage() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {

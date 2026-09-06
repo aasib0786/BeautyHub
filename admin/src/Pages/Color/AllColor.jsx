@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,7 +8,7 @@ import { getData, postData } from "../../services/FetchNodeServices";
 const AllColor = () => {
   const [colors, setColors] = useState([]); // State to store color data
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentPage = 1;
 
   useEffect(() => {
     const fetchColors = async () => {
@@ -30,6 +29,7 @@ const AllColor = () => {
     };
 
     fetchColors(); // Call the fetch function
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array to run once on mount
 
   const handleDelete = async (id) => {

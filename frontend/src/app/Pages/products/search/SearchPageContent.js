@@ -94,9 +94,11 @@ export default function SearchPageContent() {
     }
   };
 
+  const searchParamsStr = searchParams.toString();
   useEffect(() => {
     fetchSearchResults();
-  }, [searchParams.toString()]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParamsStr]);
 
   useEffect(() => {
     if (user && user?.email) {
@@ -105,7 +107,7 @@ export default function SearchPageContent() {
       dispatch(loadWishlistFromLocalStorage());
     }
     if (!categories.length) dispatch(fetchCategories());
-  }, [dispatch, user]);
+  }, [dispatch, user, categories.length]);
 
   // Wishlist Handler
   const handleWishlistToggle = async (e, product) => {
@@ -437,7 +439,7 @@ export default function SearchPageContent() {
               <div className="bh-empty-state">
                 <div className="bh-empty-icon">🔍</div>
                 <h3>No Matching Products</h3>
-                <p>We couldn't find any products matching your query or selected filters.</p>
+                <p>We couldn&apos;t find any products matching your query or selected filters.</p>
                 <button className="bh-btn-reset-large" onClick={resetFilters}>
                   View All Products
                 </button>

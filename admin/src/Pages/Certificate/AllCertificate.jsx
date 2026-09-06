@@ -3,14 +3,13 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, { getData, postData } from "../../services/FetchNodeServices";
+import axiosInstance from "../../services/FetchNodeServices";
 
 const AllCertificate = () => {
   const [sizes, setSizes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchCertificate = async (page = currentPage) => {
+  const fetchCertificate = async () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(`/api/v1/certificate/get-all-certificates`);
@@ -30,7 +29,8 @@ const AllCertificate = () => {
 
   useEffect(() => {
     fetchCertificate();
-  }, [currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDelete = async (id) => {
     const confirmed = await Swal.fire({
@@ -53,29 +53,6 @@ const AllCertificate = () => {
           error.response?.data?.message || "Error deleting size"
         );
       }
-    }
-  };
-
-  const handleStatusChange = async (e, sizeId) => {
-    const updatedStatus = e.target.checked;
-
-    try {
-      const response = await postData("api/size/change-status", {
-        sizeId,
-        status: updatedStatus,
-      });
-
-      if (response.success) {
-        setSizes((prevSizes) =>
-          prevSizes.map((size) =>
-            size._id === sizeId ? { ...size, status: updatedStatus } : size
-          )
-        );
-        toast.success("Size status updated");
-      }
-    } catch (error) {
-      toast.error("Error updating status");
-      console.error("Status error:", error);
     }
   };
 

@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, {
-  getData,
-  postData,
-} from "../../services/FetchNodeServices";
+import axiosInstance from "../../services/FetchNodeServices";
 import { hasPermission } from "../../services/permissionHelper";
 
 const AllOrder = () => {
@@ -65,24 +61,6 @@ const AllOrder = () => {
       console.error("Error deleting order:", error);
       toast.error("Failed to delete order.");
     }
-  };
-
-  // Search orders
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-
-    const filtered = orders.filter(
-      (order) =>
-        order._id.toLowerCase().includes(query) ||
-        order.shippingAddress.fullName.toLowerCase().includes(query)
-    );
-    setFilteredOrders(filtered);
-  };
-
-  // Filter orders based on selected option
-  const handleFilterChange = (e) => {
-    setFilterOption(e.target.value);
   };
 
   useEffect(() => {

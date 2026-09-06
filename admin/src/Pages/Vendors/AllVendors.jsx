@@ -273,7 +273,6 @@ const AllVendors = () => {
                 </tr>
               ) : filteredVendors.length > 0 ? (
                 filteredVendors.map((vendor, index) => {
-                  const hasDocs = vendor.panCardDoc || vendor.aadharCardDoc;
                   return (
                     <tr key={vendor._id}>
                       <td>{index + 1}</td>

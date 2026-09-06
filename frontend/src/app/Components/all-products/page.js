@@ -247,6 +247,7 @@ const Page = () => {
                         href={`/Pages/products/${generateSlug(item?.productName, item?._id)}`}
                         className="product-link"
                       >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           className="product-image"
                           src={Array.isArray(item?.images) && item.images.length > 0 ? item.images[0] : "/icon1.jpg"}

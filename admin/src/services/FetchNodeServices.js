@@ -1,6 +1,6 @@
 import axios from "axios";
-// const serverURL = "https://api.manmohanfurniture.com";
-const serverURL = "http://localhost:5000";
+const serverURL = "https://beautyhub-37gk.onrender.com";
+// const serverURL = "http://localhost:5000";
 
 const postData = async (url, body) => {
   try {

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axiosInstance, { getData, postData, serverURL } from '../../services/FetchNodeServices';
+import axiosInstance from '../../services/FetchNodeServices';
 import { hasPermission } from '../../services/permissionHelper';
 
 const AllSBanner = () => {

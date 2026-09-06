@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance, { postData } from "../../services/FetchNodeServices.js";
+import axiosInstance from "../../services/FetchNodeServices.js";
 import { fileLimit } from "../../services/fileLimit.js";
 
 const AddBanner = () => {

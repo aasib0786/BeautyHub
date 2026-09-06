@@ -52,6 +52,8 @@ export const AddToCartToServer = createAsyncThunk(
   }
 );
 
+export const addToCartToServer = AddToCartToServer;
+
 const initialState = {
   items: [],
   loading: false,

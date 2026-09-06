@@ -87,6 +87,7 @@ export default function SubCategoryProductPage() {
     if (id) {
       fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   // Load Wishlist
@@ -439,7 +440,7 @@ export default function SubCategoryProductPage() {
               <div className="bh-empty-state">
                 <div className="bh-empty-icon">🛍️</div>
                 <h3>No Products Found</h3>
-                <p>We couldn't find any products matching your search or selected filters.</p>
+                <p>We couldn&apos;t find any products matching your search or selected filters.</p>
                 <button className="bh-btn-reset-large" onClick={resetFilters}>
                   Clear All Filters
                 </button>
