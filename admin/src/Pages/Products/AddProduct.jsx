@@ -80,25 +80,22 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [mainRes, catRes, subRes, brandRes, sizeRes] = await Promise.all([
+        const [mainRes, catRes, subRes, brandRes] = await Promise.all([
           axiosInstance.get("/api/v1/main-category/get-all-main-categories"),
           axiosInstance.get("/api/v1/category/get-all-categories"),
           axiosInstance.get("/api/v1/sub-category/get-all-sub-categories"),
           axiosInstance.get("/api/v1/brand/get-all-brands"),
-          axiosInstance.get("/api/v1/size/get-all-sizes"),
         ]);
 
         const mains = mainRes?.data?.data || [];
         const cats = catRes?.data?.data || [];
         const subs = subRes?.data?.data || [];
         const brands = brandRes?.data?.data || [];
-        const sizes = sizeRes?.data?.data || [];
 
         setMainCategoryList(mains);
         setCategoryList(cats);
         setSubcategoryList(subs);
         setBrandList(brands);
-        setSizeList(sizes);
 
         // 1. Auto select 1st Main Category
         if (mains.length > 0) {
