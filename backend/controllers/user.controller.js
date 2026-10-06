@@ -10,10 +10,8 @@ import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.ut
 
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-  domain:
-    process.env.NODE_ENV === "production" ? process.env.DOMAIN : undefined,
+  secure: true,
+  sameSite: "None",
   maxAge: 2592000000,
 };
 
@@ -267,6 +265,7 @@ const SignIn = async (req, res) => {
 
     return res.status(200).json({
       message: "Sign-in successful",
+      token,
       user: {
         id: isUserExisted._id,
         fullName: isUserExisted.fullName,
@@ -382,6 +381,7 @@ const AdminSignIn = async (req, res) => {
     res.cookie("token", token, cookieOptions);
     return res.status(200).json({
       message: "Sign-in successfully",
+      token,
       user: {
         id: isUserExisted._id,
         fullName: isUserExisted.name || isUserExisted.fullName,

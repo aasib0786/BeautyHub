@@ -71,6 +71,8 @@ const Home = () => {
 
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         setLogin(false);
+        localStorage.removeItem("adminToken");
+        sessionStorage.removeItem("adminToken");
       } else {
         setLogin(false);
         console.log("error", error);

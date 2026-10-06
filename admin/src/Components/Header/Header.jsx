@@ -30,6 +30,8 @@ const Header = () => {
       console.log("logout error", error);
       toast.error(error?.response?.data?.message || 'Logout failed');
     }
+    localStorage.removeItem('adminToken');
+    sessionStorage.removeItem('adminToken');
     sessionStorage.removeItem('login');
     sessionStorage.removeItem('adminUser');
     sessionStorage.removeItem('adminRoleDetails');

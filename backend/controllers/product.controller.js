@@ -305,11 +305,18 @@ const updateProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   try {
     let user = req?.user;
-    if (!user && req.cookies?.token) {
-      try {
-        user = jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY);
-      } catch (e) {
-        user = null;
+    if (!user) {
+      const authHeader = req.headers?.authorization || req.headers?.Authorization;
+      let token = req.cookies?.token;
+      if (!token && authHeader) {
+        token = typeof authHeader === "string" && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : authHeader;
+      }
+      if (token) {
+        try {
+          user = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        } catch (e) {
+          user = null;
+        }
       }
     }
 

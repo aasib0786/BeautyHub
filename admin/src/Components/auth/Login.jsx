@@ -18,6 +18,13 @@ const Login = () => {
     try {
       const response = await axiosInstance.post('/api/v1/auth/admin/sign-in', { email, password });
       if (response.status === 200) {
+        if (response.data?.token) {
+          localStorage.setItem("adminToken", response.data.token);
+          sessionStorage.setItem("adminToken", response.data.token);
+        }
+        if (response.data?.user) {
+          sessionStorage.setItem("adminUser", JSON.stringify(response.data.user));
+        }
         toast.success('Welcome back! Logged in successfully.');
         navigate("/");
         window.location.reload();
