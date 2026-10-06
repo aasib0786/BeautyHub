@@ -35,7 +35,6 @@ const AddProduct = () => {
   // Features list state
   const [featureInput, setFeatureInput] = useState("");
   const [features, setFeatures] = useState([]);
-  const [sizeList, setSizeList] = useState([]);
 
   // SEO Attributes (Multiple Key-Value Pairs) state
   const [seoAttributes, setSeoAttributes] = useState([
