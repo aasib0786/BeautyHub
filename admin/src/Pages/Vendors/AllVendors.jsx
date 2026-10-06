@@ -4,12 +4,15 @@ import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 import axiosInstance from "../../services/FetchNodeServices";
 import { hasPermission } from "../../services/permissionHelper";
+import Pagination from "../../Components/Common/Pagination";
 
 const AllVendors = () => {
   const [vendors, setVendors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   
   // KYC Modal Inspection state
   const [selectedVendorKYC, setSelectedVendorKYC] = useState(null);
@@ -207,12 +210,16 @@ const AllVendors = () => {
       v?.aadharNumber?.includes(searchQuery)
   );
 
+  const totalItems = filteredVendors.length;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedVendors = filteredVendors.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <>
       <ToastContainer />
       <div className="bread">
         <div className="head d-flex align-items-center justify-content-between w-100">
-          <h4>🏪 Vendor Approval &amp; Verification Console</h4>
+          <h4>🏪 Vendor Approval &amp; Verification Console ({totalItems})</h4>
           <div>
             {canWrite && (
               <button
@@ -227,24 +234,43 @@ const AllVendors = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="d-flex justify-content-between align-items-center my-3 bg-white p-3 rounded border shadow-sm">
+      <div className="d-flex justify-content-between align-items-center my-3 bg-white p-3 rounded border shadow-sm flex-wrap gap-2">
         <div className="search-box" style={{ width: "350px" }}>
           <input
             type="text"
             className="form-control form-control-sm"
             placeholder="🔍 Search vendor by name, business, email, PAN, Aadhaar..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             style={{ borderRadius: "20px", padding: "6px 14px" }}
           />
         </div>
-        <div className="d-flex gap-2 align-items-center">
+        <div className="d-flex gap-2 align-items-center flex-wrap">
           <span className="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
             Pending Approval: {vendors.filter((v) => !v.isVerified).length}
           </span>
           <span className="badge bg-success px-3 py-2 rounded-pill fw-bold">
             Verified Vendors: {vendors.filter((v) => v.isVerified).length}
           </span>
+          <div className="items-limit-wrapper ms-2">
+            <span>Show:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="items-limit-select"
+            >
+              <option value={10}>10 items</option>
+              <option value={25}>25 items</option>
+              <option value={50}>50 items</option>
+              <option value={100}>100 items</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -271,11 +297,11 @@ const AllVendors = () => {
                     Loading Vendors...
                   </td>
                 </tr>
-              ) : filteredVendors.length > 0 ? (
-                filteredVendors.map((vendor, index) => {
+              ) : paginatedVendors.length > 0 ? (
+                paginatedVendors.map((vendor, index) => {
                   return (
                     <tr key={vendor._id}>
-                      <td>{index + 1}</td>
+                      <td>{startIndex + index + 1}</td>
                       <td>
                         <div className="fw-bold text-dark">🏪 {vendor.name}</div>
                         {vendor.businessName && (
@@ -397,6 +423,19 @@ const AllVendors = () => {
           </table>
         </div>
       </section>
+
+      {/* Pagination Controls */}
+      {totalItems > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onLimitChange={setItemsPerPage}
+          limitOptions={[10, 25, 50, 100]}
+          itemLabel="vendors"
+        />
+      )}
 
       {/* KYC Inspection & Edit Modal */}
       {selectedVendorKYC && (

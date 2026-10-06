@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
 import { toast } from 'react-toastify';
 import axiosInstance from '../../services/FetchNodeServices';
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [sidetoggle, setSideToggle] = useState(false);
 
   const handletoggleBtn = () => {
     setSideToggle(!sidetoggle);
   };
 
+  const closeSidebar = () => {
+    if (sidetoggle) {
+      setSideToggle(false);
+    }
+  };
 
   const handleLogout = async () => {
     try {
       const response = await axiosInstance.get('/api/v1/auth/logout');
       if (response.status === 200) {
-        toast.success('Logout successfully!');
+        toast.success('Logged out successfully');
         navigate("/login");
       }
     } catch (error) {
@@ -25,7 +31,8 @@ const Header = () => {
       toast.error(error?.response?.data?.message || 'Logout failed');
     }
     sessionStorage.removeItem('login');
-    // navigate('/login');
+    sessionStorage.removeItem('adminUser');
+    sessionStorage.removeItem('adminRoleDetails');
     window.location.href = '/login';
   };
 
@@ -68,30 +75,33 @@ const Header = () => {
     return () => window.removeEventListener("roleUpdated", fetchLiveRole);
   }, []);
 
-
   const navItems = [
-    { to: "/", label: "Dashboard", icon: "fa-solid fa-gauge", module: "Dashboard" },
-    { to: "/all-orders", label: "Manage Orders", icon: "fa-solid fa-truck", module: "Manage Orders" },
-    { to: "/all-main-category", label: "All Main Category", icon: "fa-solid fa-folder-tree", module: "All Main Category" },
-    { to: "/all-category", label: "All Category", icon: "fa-solid fa-layer-group", module: "All Category" },
-    { to: "/all-subCategory", label: "All SubCategory", icon: "fa-solid fa-sitemap", module: "All SubCategory" },
-    { to: "/all-brands", label: "Manage Brands", icon: "fa-solid fa-copyright", module: "Manage Brands" },
-    { to: "/all-products", label: "All Products", icon: "fa-solid fa-cubes", module: "All Products" },
-    { to: "/all-vendors", label: "Manage Vendors", icon: "fa-solid fa-store text-info", module: "Manage Vendors" },
-    { to: "/all-videos", label: "All Videos", icon: "fa-solid fa-video", module: "All Videos" },
-    { to: "/all-banners", label: "Manage Banners", icon: "fa-solid fa-images", module: "Manage Banners" },
-    { to: "/all-sizes", label: "Manage Sizes", icon: "fa-solid fa-ruler-combined", module: "Manage Sizes" },
-    { to: "/all-coupon", label: "Manage Coupons", icon: "fa-solid fa-tag", module: "Manage Coupons" },
-    { to: "/all-users", label: "All Users", icon: "fa-solid fa-users", module: "All Users" },
-    { to: "/all-product-inquary", label: "All product Inquiries", icon: "fa-solid fa-envelope-open-text", module: "All product Inquiries" },
-    { to: "/all-inquiries", label: "All Contact Inquiries", icon: "fa-solid fa-envelope-open-text", module: "All Contact Inquiries" },
-    { to: "/all-become-franchise", label: "Franchise Requests", icon: "fa-solid fa-handshake", module: "Franchise Requests" },
-    { to: "/all-email-inquiries", label: "Email Inquiries", icon: "fa-solid fa-envelope", module: "Email Inquiries" },
-    { to: "/all-reviews", label: "Manage Reviews", icon: "fa-solid fa-star", module: "Manage Reviews" },
-    { to: "/admin-staff-roles", label: "Admin & Staff Roles", icon: "fa-solid fa-user-lock text-primary", module: "Admin & Staff Roles" },
-    { to: "/system-settings", label: "System Settings", icon: "fa-solid fa-gear text-warning", module: "System Settings" },
+    { to: "/", label: "Dashboard", icon: "fa-solid fa-gauge-high", module: "Dashboard", section: "Overview" },
+    
+    { to: "/all-orders", label: "Manage Orders", icon: "fa-solid fa-box-open", module: "Manage Orders", section: "Orders & Sales" },
+    
+    { to: "/all-products", label: "All Products", icon: "fa-solid fa-boxes-stacked", module: "All Products", section: "Catalog & Stock" },
+    { to: "/all-main-category", label: "Main Categories", icon: "fa-solid fa-folder-tree", module: "All Main Category", section: "Catalog & Stock" },
+    { to: "/all-category", label: "Categories", icon: "fa-solid fa-layer-group", module: "All Category", section: "Catalog & Stock" },
+    { to: "/all-subCategory", label: "Sub Categories", icon: "fa-solid fa-sitemap", module: "All SubCategory", section: "Catalog & Stock" },
+    { to: "/all-brands", label: "Brands", icon: "fa-solid fa-award", module: "Manage Brands", section: "Catalog & Stock" },
+    { to: "/all-sizes", label: "Sizes", icon: "fa-solid fa-ruler-combined", module: "Manage Sizes", section: "Catalog & Stock" },
+    
+    { to: "/all-banners", label: "Banners", icon: "fa-solid fa-images", module: "Manage Banners", section: "Media & Promo" },
+    { to: "/all-videos", label: "Videos", icon: "fa-solid fa-video", module: "All Videos", section: "Media & Promo" },
+    { to: "/all-coupon", label: "Coupons", icon: "fa-solid fa-tags", module: "Manage Coupons", section: "Media & Promo" },
+    { to: "/all-reviews", label: "Reviews", icon: "fa-solid fa-star", module: "Manage Reviews", section: "Media & Promo" },
+    
+    { to: "/all-users", label: "Customers", icon: "fa-solid fa-users", module: "All Users", section: "CRM & Inquiries" },
+    { to: "/all-product-inquary", label: "Product Inquiries", icon: "fa-solid fa-comments", module: "All product Inquiries", section: "CRM & Inquiries" },
+    { to: "/all-inquiries", label: "Contact Inquiries", icon: "fa-solid fa-envelope-open-text", module: "All Contact Inquiries", section: "CRM & Inquiries" },
+    { to: "/all-become-franchise", label: "Franchise Leads", icon: "fa-solid fa-handshake", module: "Franchise Requests", section: "CRM & Inquiries" },
+    { to: "/all-email-inquiries", label: "Newsletter Leads", icon: "fa-solid fa-envelope", module: "Email Inquiries", section: "CRM & Inquiries" },
+    
+    { to: "/all-vendors", label: "Vendors & KYC", icon: "fa-solid fa-store", module: "Manage Vendors", section: "Administration" },
+    { to: "/admin-staff-roles", label: "Staff & Role Matrix", icon: "fa-solid fa-user-shield", module: "Admin & Staff Roles", section: "Administration" },
+    { to: "/system-settings", label: "System Settings", icon: "fa-solid fa-gear", module: "System Settings", section: "Administration" },
   ];
-
 
   const filteredNavItems = navItems.filter((item) => {
     const roleStr = (user?.role || "").toLowerCase();
@@ -144,45 +154,131 @@ const Header = () => {
       }
     }
 
-    return false; // Default to false for non-superadmin!
+    return false;
   });
 
+  // Group items by section
+  const sections = Array.from(new Set(filteredNavItems.map(item => item.section)));
+
+  const isCurrentActive = (path) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
+  };
+
+  const getInitials = (name) => {
+    if (!name) return "A";
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  };
+
   return (
-    <header>
+    <header className="header-wrapper">
+      {/* Top Navbar */}
       <div className="top-head">
-        <div className="right">
-          <Link className='text-white text-decoration-none' to="/">
-            <h2> BeautyHub Admin Panel</h2>
+        <div className="top-brand-area">
+          <button className="mobile-toggle-btn" onClick={handletoggleBtn} aria-label="Toggle Navigation">
+            <i className={`fa-solid ${sidetoggle ? "fa-xmark" : "fa-bars"}`}></i>
+          </button>
+          <Link className="brand-logo-link" to="/">
+            <div className="brand-badge-icon">
+              <i className="fa-solid fa-sparkles"></i>
+            </div>
+            <div className="brand-titles">
+              <span className="brand-name">BeautyHub</span>
+              <span className="brand-tag">PORTAL</span>
+            </div>
           </Link>
-          <div className="bar" onClick={handletoggleBtn}>
-            <i className="fa-solid fa-bars"></i>
-          </div>
         </div>
-        <div className="left">
-          <a href="/" target="_blank" rel="noopener noreferrer">
-            <i className="fa-solid fa-globe"></i> Go To Website
+
+        <div className="top-actions-area">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="action-btn website-btn"
+            title="Open Live Storefront"
+          >
+            <i className="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>Live Store</span>
           </a>
-          <div className="logout" onClick={handleLogout}>
-            Log Out <i className="fa-solid fa-right-from-bracket"></i>
+
+          <div className="user-profile-chip">
+            <div className="user-avatar-circle">
+              {getInitials(user?.name || "Admin")}
+            </div>
+            <div className="user-meta-info">
+              <span className="user-name">{user?.name || "Administrator"}</span>
+              <span className="user-role-badge">
+                {user?.role?.toUpperCase().replace("_", " ") || "SUPER ADMIN"}
+              </span>
+            </div>
           </div>
+
+          <button className="action-btn logout-btn" onClick={handleLogout} title="Log Out">
+            <i className="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Log Out</span>
+          </button>
         </div>
       </div>
 
-      <div className={`rightNav ${sidetoggle ? "active" : ""}`}>
-        <ul>
-          {filteredNavItems.map((item, index) => (
-            <li key={index}>
+      {/* Backdrop overlay for mobile drawer */}
+      {sidetoggle && (
+        <div className="sidebar-backdrop" onClick={closeSidebar}></div>
+      )}
 
-              <Link to={item.to} onClick={handletoggleBtn}>
-                <i className={item.icon}></i> {item.label}
-              </Link>
-            </li>
-          ))}
-          <div className="logout" onClick={handleLogout}>
-            Log Out <i className="fa-solid fa-right-from-bracket"></i>
+      {/* Modern Sidebar Navigation */}
+      <aside className={`rightNav ${sidetoggle ? "active" : ""}`}>
+        <div className="sidebar-scrollable-content">
+          {sections.map((secName) => {
+            const itemsInSec = filteredNavItems.filter(item => item.section === secName);
+            if (itemsInSec.length === 0) return null;
+
+            return (
+              <div key={secName} className="nav-group-section">
+                <div className="nav-section-title">{secName}</div>
+                <ul className="nav-list">
+                  {itemsInSec.map((item, index) => {
+                    const active = isCurrentActive(item.to);
+                    return (
+                      <li key={index} className="nav-item">
+                        <Link
+                          to={item.to}
+                          className={`nav-link-btn ${active ? "active-link" : ""}`}
+                          onClick={closeSidebar}
+                        >
+                          <span className="nav-icon-box">
+                            <i className={item.icon}></i>
+                          </span>
+                          <span className="nav-label-text">{item.label}</span>
+                          {active && <span className="active-pill-dot"></span>}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Sidebar Footer User Card */}
+        <div className="sidebar-footer-card">
+          <div className="footer-user-details">
+            <div className="footer-avatar">
+              {getInitials(user?.name || "Admin")}
+            </div>
+            <div className="footer-user-text">
+              <span className="footer-name">{user?.name || "Administrator"}</span>
+              <span className="footer-email">{user?.email || "admin@beautyhub.com"}</span>
+            </div>
           </div>
-        </ul>
-      </div>
+          <button className="footer-logout-btn" onClick={handleLogout} title="Logout">
+            <i className="fa-solid fa-power-off"></i>
+          </button>
+        </div>
+      </aside>
     </header>
   );
 };

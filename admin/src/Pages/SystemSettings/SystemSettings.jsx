@@ -228,51 +228,36 @@ const SystemSettings = () => {
           {canUpdate && activeTab !== "profile" && (
             <button
               type="button"
-              className="btn btn-warning btn-sm fw-bold px-3 py-2 rounded-pill shadow-sm"
+              className="btn btn-primary btn-sm fw-semibold px-3 py-2 rounded-2 shadow-sm d-inline-flex align-items-center gap-2"
               onClick={handleSaveSettings}
               disabled={isSaving}
             >
-              {isSaving ? "Saving..." : "💾 Save Settings"}
+              <i className="fa-solid fa-floppy-disk"></i>
+              <span>{isSaving ? "Saving..." : "Save Settings"}</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Clean Navigation Tabs */}
-      <ul className="nav nav-tabs border-bottom mb-4 bg-white p-2 rounded shadow-sm">
-        <li className="nav-item">
+      {/* Modern Segmented Navigation Tabs */}
+      <div className="system-tabs-nav mb-4">
+        {[
+          { id: "branding", label: "Website & Branding", icon: "fa-solid fa-globe" },
+          { id: "gateways", label: "Payment & API Keys", icon: "fa-solid fa-credit-card" },
+          { id: "smtp", label: "SMTP Mail Server", icon: "fa-solid fa-envelope" },
+          { id: "profile", label: "My Profile", icon: "fa-solid fa-user-shield" },
+        ].map((tab) => (
           <button
-            className={`nav-item nav-link fw-bold ${activeTab === "branding" ? "active text-primary border-primary border-bottom-0" : "text-dark"}`}
-            onClick={() => setActiveTab("branding")}
+            key={tab.id}
+            type="button"
+            className={`system-tab-btn ${activeTab === tab.id ? "active" : ""}`}
+            onClick={() => setActiveTab(tab.id)}
           >
-            🌐 Website &amp; Branding
+            <i className={tab.icon}></i>
+            <span>{tab.label}</span>
           </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-item nav-link fw-bold ${activeTab === "gateways" ? "active text-primary border-primary border-bottom-0" : "text-dark"}`}
-            onClick={() => setActiveTab("gateways")}
-          >
-            💳 Payment &amp; API Keys
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-item nav-link fw-bold ${activeTab === "smtp" ? "active text-primary border-primary border-bottom-0" : "text-dark"}`}
-            onClick={() => setActiveTab("smtp")}
-          >
-            📧 SMTP Mail Server
-          </button>
-        </li>
-        <li className="nav-item">
-          <button
-            className={`nav-item nav-link fw-bold ${activeTab === "profile" ? "active text-primary border-primary border-bottom-0" : "text-dark"}`}
-            onClick={() => setActiveTab("profile")}
-          >
-            👤 My Profile
-          </button>
-        </li>
-      </ul>
+        ))}
+      </div>
 
       {/* Profile Tab View */}
       {activeTab === "profile" && (
@@ -286,7 +271,7 @@ const SystemSettings = () => {
                   width: "56px",
                   height: "56px",
                   fontSize: "20px",
-                  backgroundColor: "#4f46e5",
+                  backgroundColor: "#2563eb",
                   flexShrink: 0,
                 }}
               >
@@ -510,21 +495,37 @@ const SystemSettings = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="col-md-12 mt-4">
-                <div className="form-check form-switch p-3 border rounded bg-light">
-                  <input
-                    className="form-check-input ms-0 me-3"
-                    type="checkbox"
-                    role="switch"
-                    name="maintenanceMode"
-                    id="maintenanceMode"
-                    checked={settings.maintenanceMode}
-                    onChange={handleChange}
-                    style={{ width: "45px", height: "22px", cursor: "pointer" }}
-                  />
-                  <label className="form-check-label fw-bold text-danger cursor-pointer" htmlFor="maintenanceMode">
-                    ⚠️ Maintenance Mode (Temporarily hide storefront for maintenance)
-                  </label>
+              <div className="col-md-12 mt-3">
+                <div
+                  className="d-flex align-items-center justify-content-between p-3 rounded-3 border"
+                  style={{
+                    background: settings.maintenanceMode ? "#fff1f2" : "#f8fafc",
+                    borderColor: settings.maintenanceMode ? "#fecdd3" : "#e2e8f0",
+                  }}
+                >
+                  <div>
+                    <div className="fw-semibold text-dark mb-1 d-flex align-items-center gap-2">
+                      <i className={`fa-solid ${settings.maintenanceMode ? "fa-triangle-exclamation text-danger" : "fa-shield-halved text-primary"}`}></i>
+                      <span>Storefront Maintenance Mode</span>
+                    </div>
+                    <div className="text-muted small">
+                      {settings.maintenanceMode
+                        ? "Storefront is currently offline to public visitors. Turn off when maintenance is done."
+                        : "Keep active for live storefront. Turn on to temporarily hide customer storefront during maintenance."}
+                    </div>
+                  </div>
+                  <div className="form-check form-switch m-0">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      name="maintenanceMode"
+                      id="maintenanceMode"
+                      checked={settings.maintenanceMode}
+                      onChange={handleChange}
+                      style={{ width: "45px", height: "22px", cursor: "pointer" }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -656,10 +657,11 @@ const SystemSettings = () => {
             <div className="col-12 mt-4 text-end border-top pt-3">
               <button
                 type="submit"
-                className="btn btn-primary btn-lg fw-bold px-4 rounded-pill shadow-sm"
+                className="btn btn-primary fw-semibold px-4 py-2 rounded-2 shadow-sm d-inline-flex align-items-center gap-2"
                 disabled={isSaving}
               >
-                {isSaving ? "Saving Settings..." : "💾 Save Settings"}
+                <i className="fa-solid fa-floppy-disk"></i>
+                <span>{isSaving ? "Saving Settings..." : "Save Settings"}</span>
               </button>
             </div>
           )}

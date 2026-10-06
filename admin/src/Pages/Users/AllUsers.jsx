@@ -4,11 +4,25 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../../services/FetchNodeServices";
 import { hasPermission } from "../../services/permissionHelper";
+import Pagination from "../../Components/Common/Pagination";
+import ViewToggle from "../../Components/Common/ViewToggle";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // View mode & pagination
+  const [viewMode, setViewMode] = useState(() => {
+    return localStorage.getItem("users_view_mode") || "list";
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const handleViewChange = (mode) => {
+    setViewMode(mode);
+    localStorage.setItem("users_view_mode", mode);
+  };
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -96,7 +110,6 @@ const AllUsers = () => {
     }
   };
 
-
   const handleRoleChange = async (userId, newRole) => {
     try {
       const response = await axiosInstance.put(
@@ -115,6 +128,11 @@ const AllUsers = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
   const filteredUsers = users.filter((u) => {
     const isCustomer = !u.role || u.role === "user" || u.role === "customer";
     if (!isCustomer) return false;
@@ -127,30 +145,78 @@ const AllUsers = () => {
     );
   });
 
+  const totalItems = filteredUsers.length;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+
+  const getInitials = (name) => {
+    if (!name) return "U";
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  };
 
   return (
     <>
       <ToastContainer />
+
+      {/* Header Banner */}
       <div className="bread">
         <div className="head">
-          <h4>All Users &amp; Role Management</h4>
+          <h4>👥 Registered Customers &amp; Users ({totalItems})</h4>
         </div>
-        <div className="links d-flex align-items-center gap-3">
+      </div>
+
+      {/* Toolbar Controls */}
+      <div className="list-toolbar">
+        <div className="list-toolbar-left">
           <div className="search-box" style={{ width: "280px" }}>
             <input
               type="text"
               className="form-control form-control-sm"
-              placeholder="🔍 Search name, email, role, phone..."
+              placeholder="🔍 Search name, email, phone..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ borderRadius: "20px", padding: "6px 14px" }}
+              onChange={handleSearchChange}
             />
+          </div>
+          {searchQuery && (
+            <button
+              className="btn btn-sm btn-outline-secondary rounded-pill px-3"
+              onClick={() => {
+                setSearchQuery("");
+                setCurrentPage(1);
+              }}
+            >
+              <i className="fa-solid fa-xmark"></i> Clear
+            </button>
+          )}
+        </div>
+
+        <div className="list-toolbar-right">
+          <ViewToggle viewMode={viewMode} onViewChange={handleViewChange} />
+
+          <div className="items-limit-wrapper">
+            <span>Show:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="items-limit-select"
+            >
+              <option value={10}>10 items</option>
+              <option value={25}>25 items</option>
+              <option value={50}>50 items</option>
+              <option value={100}>100 items</option>
+            </select>
           </div>
         </div>
       </div>
 
-      <section className="main-table">
-        <div className="table-responsive mt-3">
+      {/* List (Table) View */}
+      {viewMode === "list" && (
+        <section className="main-table">
           <table className="table table-bordered table-striped table-hover align-middle">
             <thead>
               <tr>
@@ -166,14 +232,14 @@ const AllUsers = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-3 fw-bold text-muted">
-                    Loading users...
+                  <td colSpan="7" className="text-center py-4">
+                    <i className="fa-solid fa-circle-notch fa-spin me-2 text-primary"></i> Loading users...
                   </td>
                 </tr>
-              ) : filteredUsers.length > 0 ? (
-                filteredUsers.map((user, index) => (
+              ) : paginatedUsers.length > 0 ? (
+                paginatedUsers.map((user, index) => (
                   <tr key={user._id}>
-                    <th scope="row">{index + 1}</th>
+                    <th scope="row">{startIndex + index + 1}</th>
                     <td className="fw-bold">{user.name}</td>
                     <td>{user.email}</td>
                     <td>{user.phone || "N/A"}</td>
@@ -220,7 +286,7 @@ const AllUsers = () => {
                         </option>
                       </select>
                     </td>
-                    <td>{new Date(user.createdAt).toLocaleString()}</td>
+                    <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</td>
                     {(canUpdate || canDelete) && (
                       <td className="text-center">
                         {canUpdate && (
@@ -245,15 +311,117 @@ const AllUsers = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center py-3 text-muted">
+                  <td colSpan="7" className="text-center py-4 text-muted">
                     No users found.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        </section>
+      )}
+
+      {/* Card (Grid) View */}
+      {viewMode === "card" && (
+        <div className="admin-card-grid">
+          {isLoading ? (
+            <div className="col-12 text-center py-5">
+              <i className="fa-solid fa-circle-notch fa-spin fa-2x text-primary"></i>
+              <p className="mt-2 text-muted">Loading users...</p>
+            </div>
+          ) : paginatedUsers.length === 0 ? (
+            <div className="col-12 text-center py-5 text-muted">
+              <h5>No users found</h5>
+            </div>
+          ) : (
+            paginatedUsers.map((user) => (
+              <div key={user._id} className="admin-product-card p-3">
+                <div className="d-flex align-items-center gap-3 mb-3">
+                  <div
+                    style={{
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "50%",
+                      background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+                      color: "#ffffff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: "700",
+                      fontSize: "1.1rem",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {getInitials(user.name)}
+                  </div>
+                  <div className="overflow-hidden">
+                    <h5 className="mb-0 fw-bold text-dark text-truncate">{user.name}</h5>
+                    <div className="text-muted small text-truncate">{user.email}</div>
+                  </div>
+                </div>
+
+                <div className="d-flex flex-column gap-2 mb-3 bg-light p-2.5 rounded-3">
+                  <div className="d-flex justify-content-between small">
+                    <span className="text-muted">Phone:</span>
+                    <span className="fw-semibold">{user.phone || "N/A"}</span>
+                  </div>
+                  <div className="d-flex justify-content-between small">
+                    <span className="text-muted">Joined:</span>
+                    <span>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center small">
+                    <span className="text-muted">Role:</span>
+                    <select
+                      className="form-select form-select-sm py-0 px-2 w-auto fw-bold"
+                      value={user.role || "user"}
+                      disabled={!canUpdate}
+                      onChange={(e) => canUpdate && handleRoleChange(user._id, e.target.value)}
+                    >
+                      <option value="user">Customer</option>
+                      <option value="staff">Staff</option>
+                      <option value="vendor">Vendor</option>
+                      <option value="admin">Admin</option>
+                      <option value="super_admin">Super Admin</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top">
+                  {canUpdate && (
+                    <button
+                      className="bt edit"
+                      onClick={() => handleOpenEdit(user)}
+                    >
+                      Edit <i className="fa-solid fa-pen-to-square"></i>
+                    </button>
+                  )}
+                  {canDelete && (
+                    <button
+                      className="bt delete"
+                      onClick={() => handleDeleteUser(user._id)}
+                    >
+                      Delete <i className="fa-solid fa-trash"></i>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
-      </section>
+      )}
+
+      {/* Pagination Controls */}
+      {totalItems > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onLimitChange={setItemsPerPage}
+          limitOptions={[10, 25, 50, 100]}
+          itemLabel="users"
+        />
+      )}
 
       {/* Edit User Modal Dialog */}
       {showEditModal && selectedUser && (
@@ -355,6 +523,5 @@ const AllUsers = () => {
     </>
   );
 };
-
 
 export default AllUsers;

@@ -12,16 +12,9 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001","http://localhost:3002", "https://admin.manmohanfurniture.com", "https://www.manmohanfurniture.com", "https://manmohanfurniture.com"];
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: true,
     credentials: true,
   })
 );

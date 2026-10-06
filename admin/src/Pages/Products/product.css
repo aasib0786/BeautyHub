@@ -1,18 +1,68 @@
-select {
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-    font-size: 16px;
-    color: #333;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-    outline: none;
-  }
-  
-  select:focus {
-    border-color: #4f46e5; /* Indigo (you can customize it) */
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-  }
+/* ==========================================================================
+   Product & Catalog Form Enhancements
+   ========================================================================== */
 
- 
+.product-form-container {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 2rem 2.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+}
+
+.product-form-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product-form-section-title i {
+  color: #2563eb;
+}
+
+select {
+  padding: 0.6rem 0.95rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background-color: #ffffff;
+  font-size: 0.88rem;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.image-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.image-preview-item {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
